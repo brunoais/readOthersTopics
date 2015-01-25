@@ -31,8 +31,6 @@ class initial_release extends \phpbb\db\migration\migration
 			array('custom', array(array($this, 'move_new_role_to_after_standard_permissions'))),
 			array('custom', array(array($this, 'copy_permissions_from_standard_access'))),
 			
-			// Update permission difference for the new role
-			array('permission.permission_set', array(self::ROLE_NAME, self::PERMISSION_NAME, 'role', true)),
 			// Setup default value as "yes" for roles that have the "can read" permission
 			array('custom', array(array($this, 'apply_permission_to_roles_with_can_read'))),
 			
@@ -41,6 +39,10 @@ class initial_release extends \phpbb\db\migration\migration
 			
 			// Setup default value as "yes" for individuals who manually have the "can read" permission
 			array('custom', array(array($this, 'apply_permission_to_users_with_can_read'))),
+			
+			// Remove permission from new role to make the difference against the copied one
+			array('permission.permission_unset', array(self::ROLE_NAME, self::PERMISSION_NAME)),
+			
 		);
 	}
 
