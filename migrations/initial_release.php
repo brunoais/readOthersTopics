@@ -8,7 +8,7 @@
 *
 */
 
-class db_changes extends \phpbb\db\migration\migration
+class initial_release extends \phpbb\db\migration\migration
 {
 	const PERMISSION_NAME = 'f_brunoais_read_others_topics';
 	
