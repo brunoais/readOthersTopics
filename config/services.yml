@@ -1,0 +1,12 @@
+services:
+    brunoais.readOthersTopics.event.main_listener:
+        class: brunoais\readOthersTopics\event\main_listener
+        arguments:
+            - @user
+    brunoais.readOthersTopics.event.language_listener:
+        class: brunoais\readOthersTopics\event\language_listener
+        # arguments:
+            # - @controller.helper
+            # - @template
+        tags:
+            - { name: event.listener }
