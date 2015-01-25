@@ -31,6 +31,14 @@ class initial_release extends \phpbb\db\migration\migration
 			
 			// Update permission difference for the new role
 			array('permission.permission_set', array(self::ROLE_NAME, self::PERMISSION_NAME, 'role', true)),
+			// Setup default value as "yes" for roles that have the "can read" permission
+			array('custom', array(array($this, 'apply_permission_to_roles_with_can_read'))),
+			
+			// Setup default value as "yes" for groups that manually have the "can read" permission
+			array('custom', array(array($this, 'apply_permission_to_groups_with_can_read'))),
+			
+			// Setup default value as "yes" for individuals who manually have the "can read" permission
+			array('custom', array(array($this, 'apply_permission_to_users_with_can_read'))),
 		);
 	}
 
@@ -100,5 +108,92 @@ class initial_release extends \phpbb\db\migration\migration
 		$result = $this->db->sql_query($sql);
 		$this->db->sql_freeresult($result);
 		
+	}
+	public function apply_permission_to_roles_with_can_read()
+	{
+		$sql = "
+			INSERT INTO " . $this->table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting)
+			SELECT role_id,
+			(
+				SELECT auth_option_id
+				FROM " . $this->table_prefix . "acl_options
+				WHERE auth_option = '" . self::PERMISSION_NAME . "'
+			 ), 1
+			FROM (
+				SELECT role_id
+				FROM " . $this->table_prefix . "acl_roles_data
+				WHERE auth_option_id = 
+						(
+							SELECT auth_option_id
+							FROM " . $this->table_prefix . "acl_options
+							WHERE auth_option = '" . self::PARENT_PERMISSION_NAME . "'
+						) AND
+						auth_setting = 1
+			) AS previous_table
+		";
+	  
+		$result = $this->db->sql_query($sql);
+		$this->db->sql_freeresult($result);
+	
+	}
+
+	public function apply_permission_to_groups_with_can_read()
+	{
+		
+		$sql = "
+			INSERT INTO " . $this->table_prefix . "acl_groups (group_id, forum_id, auth_option_id, auth_role_id, auth_setting)
+			SELECT group_id, forum_id, 
+			(
+				SELECT auth_option_id
+				FROM " . $this->table_prefix . "acl_options
+				WHERE auth_option = '" . self::PERMISSION_NAME . "'
+			 ), 0, 1
+			FROM (
+				SELECT group_id, forum_id
+				FROM " . $this->table_prefix . "acl_groups
+				WHERE auth_role_id = 0 AND
+					forum_id <> 0 AND
+					auth_option_id = 
+						(
+							SELECT auth_option_id
+							FROM " . $this->table_prefix . "acl_options
+							WHERE auth_option = '" . self::PARENT_PERMISSION_NAME . "'
+						) AND
+						auth_setting = 1
+			) AS previous_table
+		";
+	  
+		$result = $this->db->sql_query($sql);
+		$this->db->sql_freeresult($result);
+	}
+
+	public function apply_permission_to_users_with_can_read()
+	{
+		
+		$sql = "
+			INSERT INTO " . $this->table_prefix . "acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting)
+			SELECT user_id, forum_id, 
+			(
+				SELECT auth_option_id
+				FROM " . $this->table_prefix . "acl_options
+				WHERE auth_option = '" . self::PERMISSION_NAME . "'
+			 ), 0, 1
+			FROM (
+				SELECT user_id, forum_id
+				FROM " . $this->table_prefix . "acl_users
+				WHERE auth_role_id = 0 AND
+					forum_id <> 0 AND
+					auth_option_id = 
+						(
+							SELECT auth_option_id
+							FROM " . $this->table_prefix . "acl_options
+							WHERE auth_option = '" . self::PARENT_PERMISSION_NAME . "'
+						) AND
+						auth_setting = 1
+			) AS previous_table
+		";
+	  
+		$result = $this->db->sql_query($sql);
+		$this->db->sql_freeresult($result);
 	}
 }
