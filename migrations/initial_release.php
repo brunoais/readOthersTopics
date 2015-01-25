@@ -1,5 +1,7 @@
 <?php
 
+namespace brunoais\readOthersTopics\migrations;
+
 /**
 *
 * @package phpBB Extension - brunoais readOthersTopics
