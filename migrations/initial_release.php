@@ -10,7 +10,7 @@
 
 class initial_release extends \phpbb\db\migration\migration
 {
-	const PERMISSION_NAME = 'f_brunoais_read_others_topics';
+	const PERMISSION_NAME = 'f_read_others_topics_brunoais';
 	
 	const ROLE_NAME = 'BRUNOAIS_ROLE_READ_OTHERS_TOPICS';
 	const ROLE_DESCRIPTION_NAME = 'BRUNOAIS_ROLE_READ_OTHERS_TOPICS_EXPLAIN';
