@@ -92,17 +92,17 @@ class initial_release extends \phpbb\db\migration\migration
 	{
 		// Move my new role to under self::PARENT_NATIVE_ROLE_NAME
 		$sql = "
-		UPDATE phpbb_acl_roles
+		UPDATE " . $this->table_prefix . "acl_roles
 		SET role_order = (
 			SELECT role_order +1
 				FROM (
 					SELECT role_order
-						FROM phpbb_acl_roles
+						FROM " . $this->table_prefix . "acl_roles
 						WHERE role_name = '" . self::PARENT_NATIVE_ROLE_NAME . "'
 					 ) AS source_val
 				WHERE 1
 			)
-		WHERE role_name = 'BRUNOAIS_ROLE_READ_OTHERS_TOPICS'
+		WHERE role_name = '". self::ROLE_NAME . "'
 		";
 		
 		$result = $this->db->sql_query($sql);
@@ -112,23 +112,24 @@ class initial_release extends \phpbb\db\migration\migration
 	public function copy_permissions_from_standard_access()
 	{
 		$sql = "
-		INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting)
+		INSERT INTO " . $this->table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting)
 			SELECT (
 				SELECT role_id
-				FROM phpbb_acl_roles
-				WHERE role_name = 'BRUNOAIS_ROLE_READ_OTHERS_TOPICS'
+				FROM " . $this->table_prefix . "acl_roles
+				WHERE role_name = '". self::ROLE_NAME . "'
 			), auth_option_id, auth_setting
-			FROM phpbb_acl_roles_data
+			FROM " . $this->table_prefix . "acl_roles_data
 			WHERE role_id = (
 					SELECT role_id
-					FROM phpbb_acl_roles
-					WHERE role_name = 'ROLE_FORUM_STANDARD'
+					FROM " . $this->table_prefix . "acl_roles
+					WHERE role_name = '" . self::PARENT_NATIVE_ROLE_NAME . "'
 				)";
 	  
 		$result = $this->db->sql_query($sql);
 		$this->db->sql_freeresult($result);
 		
 	}
+
 	public function apply_permission_to_roles_with_can_read()
 	{
 		$sql = "
