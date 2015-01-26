@@ -52,10 +52,10 @@ class initial_release extends \phpbb\db\migration\migration
 		// Check if space already exists
 		$sql = "
 			SELECT count(*) AS how_many
-			FROM phpbb_acl_roles
+			FROM " . $this->table_prefix . "acl_roles
 			WHERE role_order = 1 + (
 				SELECT role_order
-				FROM phpbb_acl_roles
+				FROM " . $this->table_prefix . "roles
 				WHERE role_name = 'ROLE_FORUM_STANDARD'
 			)
 			AND
