@@ -22,7 +22,7 @@ class main_listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
-			'core.user_setup'						=> 'load_language_on_setup',
+			'core.viewtopic_before_f_read_check'						=> 'phpbb_viewtopic_before_f_read_check',
 		);
 	}
 
@@ -61,6 +61,25 @@ class main_listener implements EventSubscriberInterface
 		$this->infoStorage = array();
 	}
 
+	public function phpbb_viewtopic_before_f_read_check($event){
+		
+		$permissionResult = $this->permissionEvaluate(array(
+			'forum_id' => $event['forum_id'],
+			'topic_id' => $event['topic_id'],
+			'post_id' => $event['post_id'],
+			'topic_poster' => $event['topic_poster'],
+		));
+		
+		
+		if($permissionResult === 'NO_READ_OTHER'){
+			$this->user->add_lang_ext('brunoais\readOthersTopics', 'common');
+			$this->accessFailed();
+		}
+		
+		// If all checkout, I already did the f_read check and it passed, no need to do it again.
+		$event['overrides_f_read_check'] = $permissionResult === true;
+		
+	}
 
 	private function accessFailed(){
 		trigger_error('SORRY_AUTH_READ_OTHER');
