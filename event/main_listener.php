@@ -105,7 +105,32 @@ class main_listener implements EventSubscriberInterface
 		
 		$this->db->sql_freeresult($result);
 	}
+
+	private function permissionEvaluate($info)
 	{
+		if(!isset($info['forum_id'])){
+			if(isset($info['topic_id'])){
+				$this->getForumIdAndPosterFromTopic($info);
+			}else if(!isset($info['post_id'])){
+				$this->getForumIdAndTopicFromPost($info);
+			}
+		}
+		
+		if(!$this->auth->acl_get('f_read', $info['forum_id'])){
+			return 'NO_READ';
+		}
+		
+		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $info['forum_id'])){
+			if(!$info['topic_poster']){
+				$this->getPosterFromTopicId($info);
+			}
+			
+			if($info['topic_poster'] != $this->user->data['user_id']){
+				return 'NO_READ_OTHER';
+			}
+		}
+		
+		return true;
 		
 	}
 
