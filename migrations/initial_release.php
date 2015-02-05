@@ -41,7 +41,7 @@ class initial_release extends \phpbb\db\migration\migration
 			array('custom', array(array($this, 'apply_permission_to_users_with_can_read'))),
 			
 			// Remove permission from new role to make the difference against the copied one
-			array('permission.permission_unset', array(self::ROLE_NAME, self::PERMISSION_NAME)),
+			array('permission.permission_unset', array(self::ROLE_NAME, self::PERMISSION_NAME, 'role')),
 			
 		);
 	}
@@ -56,7 +56,7 @@ class initial_release extends \phpbb\db\migration\migration
 			WHERE role_order = 1 + (
 				SELECT role_order
 				FROM " . $this->table_prefix . "acl_roles
-				WHERE role_name = 'ROLE_FORUM_STANDARD'
+				WHERE role_name = '" . self::PARENT_NATIVE_ROLE_NAME . "'
 			)
 			AND
 			role_type = 'f_'";
