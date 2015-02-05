@@ -60,9 +60,46 @@ class main_listener implements EventSubscriberInterface
 		
 		$this->infoStorage = array();
 	}
+
+	private function getForumIdAndPosterFromTopic(&$info){
+		$sql = 'SELECT forum_id, topic_poster
+			FROM ' . $this->topics_table . '
+			WHERE topic_id = ' . (int) $info['topic_id'];
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		
+		$info['forum_id'] = $row['forum_id'];
+		$info['topic_poster'] = $row['topic_poster'];
+		
+		$this->db->sql_freeresult($result);
 	}
 
-	public function load_language_on_setup($event)
+	private function getForumIdAndTopicFromPost(&$info){
+		
+		$sql = 'SELECT forum_id, topic_id
+			FROM ' . $this->posts_table . '
+			WHERE post_id = ' . (int) $info['post_id'];
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		
+		$info['forum_id'] = $row['forum_id'];
+		$info['topic_id'] = $row['topic_id'];
+		
+		$this->db->sql_freeresult($result);
+	}
+
+	private function getPosterFromTopicId(&$info){
+		
+		$sql = 'SELECT topic_poster
+			FROM ' . $this->topics_table . '
+			WHERE topic_id = ' . (int) $info['topic_id'];
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		
+		$info['topic_poster'] = $row['topic_poster'];
+		
+		$this->db->sql_freeresult($result);
+	}
 	{
 		
 	}
