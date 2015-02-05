@@ -61,6 +61,11 @@ class main_listener implements EventSubscriberInterface
 		$this->infoStorage = array();
 	}
 
+
+	private function accessFailed(){
+		trigger_error('SORRY_AUTH_READ_OTHER');
+	}
+
 	private function getForumIdAndPosterFromTopic(&$info){
 		$sql = 'SELECT forum_id, topic_poster
 			FROM ' . $this->topics_table . '
