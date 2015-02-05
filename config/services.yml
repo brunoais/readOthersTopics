@@ -2,11 +2,15 @@ services:
     brunoais.readOthersTopics.event.main_listener:
         class: brunoais\readOthersTopics\event\main_listener
         arguments:
+            - @auth
+            - @dbal.conn
             - @user
+            - %tables.forums%
+            - %tables.topics%
+            - %tables.posts%
+        tags:
+            - { name: event.listener }
     brunoais.readOthersTopics.event.language_listener:
         class: brunoais\readOthersTopics\event\language_listener
-        # arguments:
-            # - @controller.helper
-            # - @template
         tags:
             - { name: event.listener }

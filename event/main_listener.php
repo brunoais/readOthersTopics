@@ -26,18 +26,40 @@ class main_listener implements EventSubscriberInterface
 		);
 	}
 
+	protected $infoStorage;
+	
+	/* @var \phpbb\auth\auth */
+	protected $auth;
+	
 	/* @var \phpbb\user */
 	protected $user;
+	
+	/* @var \phpbb\db\driver\driver_interface */
+	protected $db;
+	
+	/* Tables */
+	public $forums_table;
+	public $topics_table;
+	public $posts_table;
 
 	/**
 	* Constructor
 	*
-	* @param \phpbb\controller\helper	$helper		Controller helper object
-	* @param \phpbb\template			$template	Template object
+	* @param	\phpbb\auth\auth					$auth	Auth object
+	* @param	\phpbb\user							$user	User object
+	* @param	\phpbb\db\driver\driver_interface	$db		Database object
 	*/
-	public function __construct(\phpbb\user $user)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\db\driver\driver_interface $db, \phpbb\user $user, $forums_table, $topics_table, $posts_table)
 	{
+		$this->auth = $auth;
+		$this->db = $db;
 		$this->user = $user;
+		$this->forums_table = $forums_table;
+		$this->topics_table = $topics_table;
+		$this->posts_table = $posts_table;
+		
+		$this->infoStorage = array();
+	}
 	}
 
 	public function load_language_on_setup($event)
