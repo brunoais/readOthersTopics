@@ -176,7 +176,12 @@ class main_listener implements EventSubscriberInterface
 			return 'NO_READ';
 		}
 		
+		
 		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $info['forum_id'])){
+			if($this->user->data['user_id'] == ANONYMOUS){
+				return 'NO_READ_OTHER';
+			}
+			
 			if(!$info['topic_poster']){
 				$this->getPosterFromTopicId($info);
 			}
