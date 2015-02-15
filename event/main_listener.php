@@ -28,6 +28,9 @@ class main_listener implements EventSubscriberInterface
 			'core.modify_posting_auth'			=> 'phpbb_modify_posting_auth',
 			
 			'core.report_post_auth'				=> 'phpbb_report_post_auth',
+			
+			
+			'core.phpbb_content_visibility_get_visibility_sql_before'	=> 'phpbb_content_visibility_get_visibility_sql_before',
 			'core.viewtopic_before_f_read_check'						=> 'phpbb_viewtopic_before_f_read_check',
 		);
 	}
@@ -123,6 +126,15 @@ class main_listener implements EventSubscriberInterface
 	}
 	
 	
+	
+	public function phpbb_content_visibility_get_visibility_sql_before($event){
+		
+		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id'])){
+				if($event['mode'] === 'topic'){
+					$event['where_sql'] .= ' ' . $event['table_alias'] . 'topic_poster = ' . (int) $this->user->data['user_id'] . ' AND ';
+				}
+			}
+	}
 	public function phpbb_viewtopic_before_f_read_check($event){
 		
 		$permissionResult = $this->permissionEvaluate(array(
