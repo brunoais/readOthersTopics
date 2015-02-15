@@ -24,6 +24,9 @@ class main_listener implements EventSubscriberInterface
 		return array(
 			'core.ucp_pm_compose_compose_pm_basic_info_query_before'		=> 'phpbb_ucp_pm_compose_compose_pm_basic_info_query_before',
 			'core.ucp_pm_compose_quotepost_query_after'						=> 'phpbb_ucp_pm_compose_quotepost_query_after',
+			
+			'core.modify_posting_auth'			=> 'phpbb_modify_posting_auth',
+			
 			'core.viewtopic_before_f_read_check'						=> 'phpbb_viewtopic_before_f_read_check',
 		);
 	}
@@ -84,6 +87,19 @@ class main_listener implements EventSubscriberInterface
 			'forum_id' => $event['post']['forum_id'],
 			'post_id' => $event['msg_id'],
 			'topic_poster' => $event['topic_poster'],
+		));
+		
+		if($permissionResult === 'NO_READ_OTHER'){
+			trigger_error('NOT_AUTHORISED');
+		}
+	}
+	
+	public function phpbb_modify_posting_auth($event){
+
+		$permissionResult = $this->permissionEvaluate(array(
+			'forum_id' => $event['forum_id'],
+			'topic_id' => $event['topic_id'],
+			'post_id' => $event['post_id'],
 		));
 		
 		if($permissionResult === 'NO_READ_OTHER'){
