@@ -22,6 +22,8 @@ class main_listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
+			'core.ucp_pm_compose_compose_pm_basic_info_query_before'		=> 'phpbb_ucp_pm_compose_compose_pm_basic_info_query_before',
+			'core.ucp_pm_compose_quotepost_query_after'						=> 'phpbb_ucp_pm_compose_quotepost_query_after',
 			'core.viewtopic_before_f_read_check'						=> 'phpbb_viewtopic_before_f_read_check',
 		);
 	}
@@ -65,6 +67,30 @@ class main_listener implements EventSubscriberInterface
 		$this->infoStorage = array();
 	}
 
+	public function phpbb_ucp_pm_compose_compose_pm_basic_info_query_before($event){
+
+		if($event['action'] === 'quotepost'){
+			$sql = $event['sql'];
+			
+			$sql = explode(' ', $sql, 2);
+			$sql = $sql[0] . ' t.topic_poster, ' . $sql[1];
+			$event['sql'] = $sql;
+		}
+	}
+	
+	public function phpbb_ucp_pm_compose_quotepost_query_after($event){
+
+		$permissionResult = $this->permissionEvaluate(array(
+			'forum_id' => $event['post']['forum_id'],
+			'post_id' => $event['msg_id'],
+			'topic_poster' => $event['topic_poster'],
+		));
+		
+		if($permissionResult === 'NO_READ_OTHER'){
+			trigger_error('NOT_AUTHORISED');
+		}
+	}
+	
 	public function phpbb_viewtopic_before_f_read_check($event){
 		
 		$permissionResult = $this->permissionEvaluate(array(
