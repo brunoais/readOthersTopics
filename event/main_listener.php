@@ -80,6 +80,13 @@ class main_listener implements EventSubscriberInterface
 		$event['overrides_f_read_check'] = $permissionResult === true;
 		
 	}
+	
+	
+	
+	
+	//
+	// Auxiliary functions
+	//
 
 	private function accessFailed(){
 		trigger_error('SORRY_AUTH_READ_OTHER');
