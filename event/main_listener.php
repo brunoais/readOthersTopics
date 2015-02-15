@@ -37,6 +37,9 @@ class main_listener implements EventSubscriberInterface
 	/* @var \phpbb\db\driver\driver_interface */
 	protected $db;
 	
+	/* @var \phpbb\template\template */
+	protected $template;
+	
 	/* Tables */
 	public $forums_table;
 	public $topics_table;
@@ -49,11 +52,12 @@ class main_listener implements EventSubscriberInterface
 	* @param	\phpbb\user							$user	User object
 	* @param	\phpbb\db\driver\driver_interface	$db		Database object
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\db\driver\driver_interface $db, \phpbb\user $user, $forums_table, $topics_table, $posts_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user, $forums_table, $topics_table, $posts_table)
 	{
 		$this->auth = $auth;
 		$this->db = $db;
 		$this->user = $user;
+		$this->template = $template;
 		$this->forums_table = $forums_table;
 		$this->topics_table = $topics_table;
 		$this->posts_table = $posts_table;

@@ -4,6 +4,7 @@ services:
         arguments:
             - @auth
             - @dbal.conn
+            - @template
             - @user
             - %tables.forums%
             - %tables.topics%
