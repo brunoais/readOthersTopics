@@ -27,6 +27,7 @@ class main_listener implements EventSubscriberInterface
 			
 			'core.modify_posting_auth'			=> 'phpbb_modify_posting_auth',
 			
+			'core.report_post_auth'				=> 'phpbb_report_post_auth',
 			'core.viewtopic_before_f_read_check'						=> 'phpbb_viewtopic_before_f_read_check',
 		);
 	}
@@ -106,6 +107,21 @@ class main_listener implements EventSubscriberInterface
 			trigger_error('NOT_AUTHORISED');
 		}
 	}
+	
+	public function phpbb_report_post_auth($event){
+
+		$permissionResult = $this->permissionEvaluate(array(
+			'forum_id' => $event['forum_data']['forum_id'],
+			'topic_id' => $event['report_data']['topic_id'],
+			'post_id' => $event['report_data']['post_id'],
+			'topic_poster' => $event['report_data']['topic_poster'],
+		));
+		
+		if($permissionResult === 'NO_READ_OTHER'){
+			trigger_error('POST_NOT_EXIST');
+		}
+	}
+	
 	
 	public function phpbb_viewtopic_before_f_read_check($event){
 		
