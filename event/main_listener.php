@@ -142,6 +142,30 @@ class main_listener implements EventSubscriberInterface
 			}
 	}
 	
+	public function phpbb_content_visibility_get_forums_visibility_before($event){
+		
+		// If the event mode is 'post', there's nothing I can do here.
+		if($event['mode'] === 'topic'){
+			$forum_ids = $event['forum_ids'];
+			$fullAccessForumIDs = array();
+			
+			foreach($forum_ids AS $forum_id){
+				// var_dump($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id));
+				if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+						$fullAccessForumIDs[] = $forum_id;
+				}
+			}
+			
+			if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+				// Nothing to filter
+				return;
+			}
+			
+			$event['where_sql'] .= ' (' . $this->db->sql_in_set($event['table_alias'] . 'forum_id', $fullAccessForumIDs) . '
+				OR ' . $event['table_alias'] . 'topic_poster = ' . (int) $this->user->data['user_id'] . ' ) AND ';
+		}
+	}
+	
 	
 	
 	public function phpbb_viewforum_modify_topics_data($event){
