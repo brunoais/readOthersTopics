@@ -34,6 +34,7 @@ class main_listener implements EventSubscriberInterface
 			
 			
 			'core.viewforum_modify_topics_data'						=> 'phpbb_viewforum_modify_topics_data',
+			'core.display_forums_modify_template_vars'				=> 'phpbb_display_forums_modify_template_vars',
 			'core.viewtopic_before_f_read_check'					=> 'phpbb_viewtopic_before_f_read_check',
 			
 			
@@ -238,6 +239,32 @@ class main_listener implements EventSubscriberInterface
 		
 	// }
 	
+	public function phpbb_display_forums_modify_template_vars($event){
+		
+		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_row']['FORUM_ID'])){
+			$forum_row = $event['forum_row'];
+			$forum_row['TOPICS'] = '-';
+			$forum_row['POSTS'] = '-';
+			$forum_row['LAST_POSTER_FULL'] = '-';
+			$forum_row['U_LAST_POST'] = '#';
+			// $forum_row['S_DISPLAY_SUBJECT'] = false;
+			$forum_row['LAST_POST_SUBJECT'] = '*Classified information*';
+			$forum_row['LAST_POST_SUBJECT_TRUNCATED'] = '*Classified information*';
+			// $forum_row['LAST_POST_TIME'] = '';
+			$forum_row['LAST_POST_TIME'] = '&nbsp;
+<script>
+	var script = document.currentScript || (function() {
+		var scripts = document.getElementsByTagName("script");
+		return scripts[scripts.length - 1];
+	})();
+	script.parentNode.parentNode.innerHTML = "<span>Classified information</span>";
+</script>
+';
+			$event['forum_row'] = $forum_row;
+		}
+		
+	}
+
 	public function phpbb_viewtopic_before_f_read_check($event){
 		
 		$permissionResult = $this->permissionEvaluate(array(
