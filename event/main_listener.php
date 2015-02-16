@@ -356,7 +356,7 @@ class main_listener implements EventSubscriberInterface
 				return 'NO_READ_OTHER';
 			}
 			
-			if(!$info['topic_poster']){
+			if(!isset($info['topic_poster'])){
 				$this->getPosterFromTopicId($info);
 			}
 			
