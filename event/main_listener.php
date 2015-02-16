@@ -105,15 +105,17 @@ class main_listener implements EventSubscriberInterface
 	}
 	
 	public function phpbb_modify_posting_auth($event){
-
-		$permissionResult = $this->permissionEvaluate(array(
-			'forum_id' => $event['forum_id'],
-			'topic_id' => $event['topic_id'],
-			'post_id' => $event['post_id'],
-		));
-		
-		if($permissionResult === 'NO_READ_OTHER'){
-			trigger_error('NOT_AUTHORISED');
+		if(in_array($event['mode'], array('reply', 'quote', 'edit', 'delete', 'bump'), true)){
+			
+			$permissionResult = $this->permissionEvaluate(array(
+				'forum_id' => $event['forum_id'],
+				'topic_id' => $event['topic_id'],
+				'post_id' => $event['post_id'],
+			));
+			
+			if($permissionResult === 'NO_READ_OTHER'){
+				trigger_error('NOT_AUTHORISED');
+			}
 		}
 	}
 	
@@ -130,7 +132,6 @@ class main_listener implements EventSubscriberInterface
 			trigger_error('POST_NOT_EXIST');
 		}
 	}
-	
 	
 	
 	public function phpbb_content_visibility_get_visibility_sql_before($event){
