@@ -34,7 +34,6 @@ class main_listener implements EventSubscriberInterface
 			
 			
 			// 'core.viewforum_modify_topics_data'						=> 'phpbb_viewforum_modify_topics_data',
-			'core.viewtopic_before_f_read_check'						=> 'phpbb_viewtopic_before_f_read_check',
 			'core.viewtopic_before_f_read_check'					=> 'phpbb_viewtopic_before_f_read_check',
 			
 			
