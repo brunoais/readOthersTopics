@@ -29,12 +29,13 @@ class main_listener implements EventSubscriberInterface
 			
 			'core.report_post_auth'				=> 'phpbb_report_post_auth',
 			
-			'core.phpbb_content_visibility_get_visibility_sql_before'	=> 'phpbb_content_visibility_get_visibility_sql_before',
+			'core.phpbb_content_visibility_get_visibility_sql_before'		=> 'phpbb_content_visibility_get_visibility_sql_before',
 			'core.phpbb_content_visibility_get_forums_visibility_before'	=> 'phpbb_content_visibility_get_forums_visibility_before',
 			
 			
 			// 'core.viewforum_modify_topics_data'						=> 'phpbb_viewforum_modify_topics_data',
 			'core.viewtopic_before_f_read_check'						=> 'phpbb_viewtopic_before_f_read_check',
+			'core.viewtopic_before_f_read_check'					=> 'phpbb_viewtopic_before_f_read_check',
 			
 			
 		);
