@@ -277,7 +277,7 @@ class main_listener implements EventSubscriberInterface
 			'forum_id' => $event['forum_id'],
 			'topic_id' => $event['topic_id'],
 			'post_id' => $event['post_id'],
-			'topic_poster' => $event['topic_poster'],
+			'topic_poster' => $event['topic_data']['topic_poster'],
 			'topic_type' => $event['topic_data']['topic_type'],
 		));
 		
