@@ -37,6 +37,8 @@ class main_listener implements EventSubscriberInterface
 			'core.display_forums_modify_template_vars'				=> 'phpbb_display_forums_modify_template_vars',
 			'core.viewtopic_before_f_read_check'					=> 'phpbb_viewtopic_before_f_read_check',
 			
+			'core.search_modify_rowset'								=> 'search_modify_rowset',
+			
 			
 		);
 	}
@@ -289,6 +291,30 @@ class main_listener implements EventSubscriberInterface
 		
 		// If all checkout, I already did the f_read check and it passed, no need to do it again.
 		$event['overrides_f_read_check'] = $permissionResult === true;
+		
+	}
+	
+	public function search_modify_rowset($event){
+		
+		// var_dump($event['rowset']);
+		
+		$rowset = $event['rowset'];
+		
+		foreach($rowset AS $key => $row){
+			$permissionResult = $this->permissionEvaluate(array(
+				'forum_id' => $row['forum_id'],
+				'topic_poster' => $row['topic_poster'],
+				'topic_type' => $row['topic_type'],
+			));
+			
+			if($permissionResult === 'NO_READ_OTHER'){
+				unset($rowset[$key]);
+			}
+			
+		}
+		
+		$event['rowset'] = $rowset;
+		
 		
 	}
 	
