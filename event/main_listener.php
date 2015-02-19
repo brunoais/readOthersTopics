@@ -170,62 +170,64 @@ class main_listener implements EventSubscriberInterface
 	
 	
 	
+	// public function phpbb_viewforum_modify_topics_data($event){
+		
+		// // For now, there's no good way of doing this... Maybe there will be one later
+		// $this->template->assign_vars(array(
+			// 'TOTAL_TOPICS'	=> false,
+		// ));
+		
+	// }
+	
+	
 	public function phpbb_viewforum_modify_topics_data($event){
 		
-		// For now, there's no good way of doing this... Maybe there will be one later
+		$forumIds = array();
+		$forumIDVsContent = array();
+		$topicIdToRemove = array();
+		
+		$topic_list = $event['topic_list'];
+		$rowset = $event['rowset'];
+		$total_topic_count = $event['total_topic_count'];
+		
+		foreach($rowset AS $rowElement){
+			$forumIds[] = $rowElement['forum_id'];
+			$forumIDVsContent[$rowElement['forum_id']][] = $rowElement;
+		}
+		
+		$forumIds = array_unique($forumIds, SORT_NUMERIC);
+		
+		$limitedAccessForumIDs = array();
+
+		foreach($forumIds AS $forumId){
+			if(!$this->auth->acl_get('f_read_others_topics_brunoais', $forumId)){
+				$limitedAccessForumIDs[] = $forumId;
+			}
+		}
+		
+		
+		foreach($limitedAccessForumIDs AS $limitedAccessForumID){
+			foreach($forumIDVsContent[$limitedAccessForumID] AS $thisTopicData){
+				if($thisTopicData['topic_poster'] != $this->user->data['user_id'] &&					
+						$thisTopicData['topic_type'] != POST_ANNOUNCE &&
+						$thisTopicData['topic_type'] != POST_GLOBAL
+					){
+					$topicIdToRemove[] = $thisTopicData['topic_id'];
+					unset($rowset[$thisTopicData['topic_id']]);
+					$total_topic_count--;
+				}
+			}
+		}
+		
+		$topic_list = array_diff($topic_list, $topicIdToRemove);
+		
+		$event['topic_list'] = $topic_list;
+		$event['rowset'] = $rowset;
+		$event['total_topic_count'] = $total_topic_count;
+		
 		$this->template->assign_vars(array(
 			'TOTAL_TOPICS'	=> false,
 		));
-		
-	}
-	
-	
-	// public function phpbb_viewforum_modify_topics_data($event){
-		
-		// $forumIds = array();
-		// $forumIDVsContent = array();
-		// $topicIdToRemove = array();
-		
-		// $topic_list = $event['topic_list'];
-		// $rowset = $event['rowset'];
-		// $total_topic_count = $event['total_topic_count'];
-		
-		// foreach($rowset AS $rowElement){
-			// $forumIds[] = $rowElement['forum_id'];
-			// $forumIDVsContent[$rowElement['forum_id']][] = $rowElement;
-		// }
-		
-		// $forumIds = array_unique($forumIds, SORT_NUMERIC);
-		
-		// $limitedAccessForumIDs = array();
-
-		// foreach($forumIds AS $forumId){
-			// if(!$this->auth->acl_get('f_read_others_topics_brunoais', $forumId)){
-				// $limitedAccessForumIDs[] = $forumId;
-			// }
-		// }
-		
-		
-		// foreach($limitedAccessForumIDs AS $limitedAccessForumID){
-			// foreach($forumIDVsContent[$limitedAccessForumID] AS $thisTopicData){
-				// if($thisTopicData['topic_poster'] != $this->user->data['user_id']){
-					// $topicIdToRemove[] = $thisTopicData['topic_id'];
-					// unset($rowset[$thisTopicData['topic_id']]);
-					// $total_topic_count--;
-				// }
-			// }
-		// }
-		
-		// $topic_list = array_diff($topic_list, $topicIdToRemove);
-		
-		// $event['topic_list'] = $topic_list;
-		// $event['rowset'] = $rowset;
-		// $event['total_topic_count'] = $total_topic_count;
-		
-		// $total_topic_count
-		// $this->template->assign_vars(array(
-			// 'TOTAL_TOPICS'	=> ($s_display_active) ? false : $user->lang('VIEW_FORUM_TOPICS', (int) $total_topic_count),
-		// ));
 		
 		// var_dump($event['rowset']);
 		
@@ -239,7 +241,7 @@ class main_listener implements EventSubscriberInterface
 		// ));
 		
 		
-	// }
+	}
 	
 	public function phpbb_display_forums_modify_template_vars($event){
 		
