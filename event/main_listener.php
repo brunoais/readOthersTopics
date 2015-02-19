@@ -126,6 +126,7 @@ class main_listener implements EventSubscriberInterface
 			'topic_id' => $event['report_data']['topic_id'],
 			'post_id' => $event['report_data']['post_id'],
 			'topic_poster' => $event['report_data']['topic_poster'],
+			'topic_type' => $event['report_data']['topic_type'],
 		));
 		
 		if($permissionResult === 'NO_READ_OTHER'){
@@ -234,6 +235,7 @@ class main_listener implements EventSubscriberInterface
 			// 'topic_id' => $event['topic_id'],
 			// 'post_id' => $event['post_id'],
 			// 'topic_poster' => $event['topic_poster'],
+			// 'topic_type' => $event['topic_type'],
 		// ));
 		
 		
@@ -272,6 +274,7 @@ class main_listener implements EventSubscriberInterface
 			'topic_id' => $event['topic_id'],
 			'post_id' => $event['post_id'],
 			'topic_poster' => $event['topic_poster'],
+			'topic_type' => $event['topic_data']['topic_type'],
 		));
 		
 		
@@ -323,15 +326,16 @@ class main_listener implements EventSubscriberInterface
 		$this->db->sql_freeresult($result);
 	}
 
-	private function getPosterFromTopicId(&$info){
+	private function getPosterAndTypeFromTopicId(&$info){
 		
-		$sql = 'SELECT topic_poster
+		$sql = 'SELECT topic_poster, topic_type
 			FROM ' . $this->topics_table . '
 			WHERE topic_id = ' . (int) $info['topic_id'];
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		
 		$info['topic_poster'] = $row['topic_poster'];
+		$info['topic_type'] = $row['topic_type'];
 		
 		$this->db->sql_freeresult($result);
 	}
@@ -356,11 +360,25 @@ class main_listener implements EventSubscriberInterface
 				return 'NO_READ_OTHER';
 			}
 			
-			if(!isset($info['topic_poster'])){
-				$this->getPosterFromTopicId($info);
+			if(
+				isset($info['topic_type']) &&
+				(
+					$info['topic_type'] == POST_ANNOUNCE ||
+					$info['topic_type'] == POST_GLOBAL
+				)				
+				){
+				return true;
 			}
 			
-			if($info['topic_poster'] != $this->user->data['user_id']){
+			if(!isset($info['topic_poster'])){
+				$this->getPosterAndTypeFromTopicId($info);
+			}
+			
+			if(
+				$info['topic_poster'] != $this->user->data['user_id'] &&
+				$info['topic_type'] != POST_ANNOUNCE &&
+				$info['topic_type'] != POST_GLOBAL
+				){
 				return 'NO_READ_OTHER';
 			}
 		}
