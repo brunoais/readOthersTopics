@@ -138,10 +138,10 @@ class main_listener implements EventSubscriberInterface
 	public function phpbb_content_visibility_get_visibility_sql_before($event){
 		
 		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id'])){
-				if($event['mode'] === 'topic'){
-					$event['where_sql'] .= ' ' . $event['table_alias'] . 'topic_poster = ' . (int) $this->user->data['user_id'] . ' AND ';
-				}
+			if($event['mode'] === 'topic'){
+				$event['where_sql'] .= ' ' . $event['table_alias'] . 'topic_poster = ' . (int) $this->user->data['user_id'] . ' AND ';
 			}
+		}
 	}
 	
 	public function phpbb_content_visibility_get_forums_visibility_before($event){
@@ -165,7 +165,9 @@ class main_listener implements EventSubscriberInterface
 			
 			$event['where_sql'] .= ' (' . $this->db->sql_in_set($event['table_alias'] . 'forum_id', $fullAccessForumIDs) . '
 				OR ' . $event['table_alias'] . 'topic_poster = ' . (int) $this->user->data['user_id'] . ' ) AND ';
+			
 		}
+		
 	}
 	
 	
