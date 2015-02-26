@@ -285,7 +285,6 @@ class main_listener implements EventSubscriberInterface
 		
 		
 		if($permissionResult === 'NO_READ_OTHER'){
-			$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
 			$this->accessFailed();
 		}
 		
@@ -326,6 +325,7 @@ class main_listener implements EventSubscriberInterface
 	//
 
 	private function accessFailed(){
+		$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
 		trigger_error('SORRY_AUTH_READ_OTHER');
 	}
 
