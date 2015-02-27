@@ -34,6 +34,7 @@ class main_listener implements EventSubscriberInterface
 			
 			
 			'core.viewforum_modify_topics_data'						=> 'phpbb_viewforum_modify_topics_data',
+			'core.viewforum_get_topic_data'							=> 'phpbb_viewforum_get_topic_data',
 			'core.display_forums_modify_template_vars'				=> 'phpbb_display_forums_modify_template_vars',
 			'core.viewtopic_before_f_read_check'					=> 'phpbb_viewtopic_before_f_read_check',
 			
@@ -50,6 +51,9 @@ class main_listener implements EventSubscriberInterface
 	
 	/* @var \phpbb\user */
 	protected $user;
+	
+	/* @var \phpbb\content_visibility */
+	protected $phpbb_content_visibility;
 	
 	/* @var \phpbb\db\driver\driver_interface */
 	protected $db;
@@ -69,9 +73,10 @@ class main_listener implements EventSubscriberInterface
 	* @param	\phpbb\user							$user	User object
 	* @param	\phpbb\db\driver\driver_interface	$db		Database object
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user, $forums_table, $topics_table, $posts_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\content_visibility $content_visibility, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user, $forums_table, $topics_table, $posts_table)
 	{
 		$this->auth = $auth;
+		$this->phpbb_content_visibility = $content_visibility;
 		$this->db = $db;
 		$this->user = $user;
 		$this->template = $template;
@@ -185,6 +190,7 @@ class main_listener implements EventSubscriberInterface
 	
 	
 	public function phpbb_viewforum_modify_topics_data($event){
+	public function phpbb_viewforum_get_topic_data($event){
 		
 		$forumIds = array();
 		$forumIDVsContent = array();
@@ -221,6 +227,23 @@ class main_listener implements EventSubscriberInterface
 					$total_topic_count--;
 				}
 			}
+		if(!$event['sort_days']){
+			
+			$sql = 'SELECT COUNT(topic_id) AS num_topics
+				FROM ' . TOPICS_TABLE . '
+				WHERE 
+					topic_type = ' . POST_GLOBAL . "
+					OR (
+						forum_id = {$event['forum_id']}
+						AND (
+							topic_type = " . POST_ANNOUNCE . '
+						 OR ' . $this->phpbb_content_visibility->get_visibility_sql('topic', $event['forum_id']) . '
+					))';
+			var_dump($sql);
+			$result = $this->db->sql_query($sql);
+			$event['topics_count'] = (int) $this->db->sql_fetchfield('num_topics');
+			$this->db->sql_freeresult($result);
+			
 		}
 		
 		$topic_list = array_diff($topic_list, $topicIdToRemove);
@@ -246,6 +269,7 @@ class main_listener implements EventSubscriberInterface
 		
 		
 	}
+	
 	
 	public function phpbb_display_forums_modify_template_vars($event){
 		

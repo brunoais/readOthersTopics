@@ -3,6 +3,7 @@ services:
         class: brunoais\readOthersTopics\event\main_listener
         arguments:
             - @auth
+            - @content.visibility
             - @dbal.conn
             - @template
             - @user
