@@ -192,7 +192,6 @@ class main_listener implements EventSubscriberInterface
 							topic_type = " . POST_ANNOUNCE . '
 						 OR ' . $this->phpbb_content_visibility->get_visibility_sql('topic', $event['forum_id']) . '
 					))';
-			var_dump($sql);
 			$result = $this->db->sql_query($sql);
 			$event['topics_count'] = (int) $this->db->sql_fetchfield('num_topics');
 			$this->db->sql_freeresult($result);
