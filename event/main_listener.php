@@ -30,6 +30,7 @@ class main_listener implements EventSubscriberInterface
 			'core.report_post_auth'				=> 'phpbb_report_post_auth',
 			
 			'core.mcp_global_f_read_auth_after'						=> 'phpbb_mcp_global_f_read_auth_after',
+			'core.mcp_reports_get_reports_query_before'				=> 'phpbb_mcp_reports_get_reports_query_before',
 			'core.phpbb_content_visibility_get_visibility_sql_before'		=> 'phpbb_content_visibility_get_visibility_sql_before',
 			'core.phpbb_content_visibility_get_forums_visibility_before'	=> 'phpbb_content_visibility_get_forums_visibility_before',
 			
@@ -154,6 +155,36 @@ class main_listener implements EventSubscriberInterface
 				trigger_error('NOT_AUTHORISED');
 			}
 		}
+	}
+	public function phpbb_mcp_reports_get_reports_query_before($event){
+		
+		$forum_ids = $event['forum_list'];
+		$fullAccessForumIDs = array();
+		foreach($forum_ids AS $forum_id){
+			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+					$fullAccessForumIDs[] = $forum_id;
+			}
+		}
+		
+		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+			// Nothing to filter
+			return;
+		}
+		
+		$event['sql'] = 
+		preg_replace(
+				'%ORDER BY ' . preg_quote($event['sort_order_sql'], '%') . '%',
+			' AND (' . $this->db->sql_in_set('t.forum_id', $fullAccessForumIDs, false, true) . '
+			OR t.topic_poster = ' . (int) $this->user->data['user_id'] . ' )
+			ORDER BY ' . $event['sort_order_sql'] ,
+			$event['sql'],
+			1
+		);
+	}
+	
+	
+		
+		
 	}
 	public function phpbb_content_visibility_get_visibility_sql_before($event){
 		
