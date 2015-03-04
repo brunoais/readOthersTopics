@@ -29,6 +29,7 @@ class main_listener implements EventSubscriberInterface
 			
 			'core.report_post_auth'				=> 'phpbb_report_post_auth',
 			
+			'core.mcp_global_f_read_auth_after'						=> 'phpbb_mcp_global_f_read_auth_after',
 			'core.phpbb_content_visibility_get_visibility_sql_before'		=> 'phpbb_content_visibility_get_visibility_sql_before',
 			'core.phpbb_content_visibility_get_forums_visibility_before'	=> 'phpbb_content_visibility_get_forums_visibility_before',
 			
@@ -141,6 +142,19 @@ class main_listener implements EventSubscriberInterface
 	}
 	
 	
+	
+	public function phpbb_mcp_global_f_read_auth_after($event){
+		if($event['forum_id'] && $event['topic_id']){
+			$permissionResult = $this->permissionEvaluate(array(
+				'forum_id' => $event['forum_id'],
+				'topic_id' => $event['topic_id'],
+			));
+			
+			if($permissionResult === 'NO_READ_OTHER'){
+				trigger_error('NOT_AUTHORISED');
+			}
+		}
+	}
 	public function phpbb_content_visibility_get_visibility_sql_before($event){
 		
 		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id'])){
