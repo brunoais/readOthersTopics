@@ -36,6 +36,7 @@ class main_listener implements EventSubscriberInterface
 			'core.mcp_front_queue_unapproved_total_before'			=> 'phpbb_mcp_front_queue_unapproved_total_before',
 			'core.mcp_front_view_queue_postid_list_after'			=> 'phpbb_mcp_front_view_queue_postid_list_after',
 			'core.mcp_front_reports_count_query_before'			=> 'phpbb_mcp_front_reports_count_query_before',
+			'core.mcp_front_reports_listing_query_before'			=> 'phpbb_mcp_front_reports_listing_query_before',
 			
 			'core.phpbb_content_visibility_get_visibility_sql_before'		=> 'phpbb_content_visibility_get_visibility_sql_before',
 			'core.phpbb_content_visibility_get_forums_visibility_before'	=> 'phpbb_content_visibility_get_forums_visibility_before',
@@ -314,6 +315,33 @@ class main_listener implements EventSubscriberInterface
 		$event['sql'] = $sql;
 		
 	}
+	
+	public function phpbb_mcp_front_reports_listing_query_before($event){
+		
+		$forum_ids = $event['forum_list'];
+		$fullAccessForumIDs = array();
+		foreach($forum_ids AS $forum_id){
+			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+				$fullAccessForumIDs[] = $forum_id;
+			}
+		}
+		
+		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+			// Nothing to filter
+			return;
+		}
+		
+		$sql_ary = $event['sql_ary'];
+		
+		$sql_ary['WHERE'] .= '
+					AND (' . $this->db->sql_in_set('p.forum_id', $fullAccessForumIDs) . '
+						OR t.topic_poster = ' . (int) $this->user->data['user_id'] . '
+					)';
+		
+		$event['sql_ary'] = $sql_ary;
+		
+	}
+	
 	public function phpbb_content_visibility_get_visibility_sql_before($event){
 		
 		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id'])){
