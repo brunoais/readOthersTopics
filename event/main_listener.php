@@ -31,6 +31,7 @@ class main_listener implements EventSubscriberInterface
 			
 			'core.mcp_global_f_read_auth_after'						=> 'phpbb_mcp_global_f_read_auth_after',
 			'core.mcp_reports_get_reports_query_before'				=> 'phpbb_mcp_reports_get_reports_query_before',
+			'core.mcp_sorting_query_before'				=> 'phpbb_mcp_sorting_query_before',
 			'core.phpbb_content_visibility_get_visibility_sql_before'		=> 'phpbb_content_visibility_get_visibility_sql_before',
 			'core.phpbb_content_visibility_get_forums_visibility_before'	=> 'phpbb_content_visibility_get_forums_visibility_before',
 			
@@ -183,6 +184,24 @@ class main_listener implements EventSubscriberInterface
 	}
 	
 	
+	public function phpbb_mcp_sorting_query_before($event){
+			$fullAccessForumIDs = ($event['forum_id']) ? array($event['forum_id']) : array_intersect(get_forum_list('f_read_others_topics_brunoais'), get_forum_list('m_approve'));
+			
+			switch($event['mode']){
+				
+				case 'forum_view':
+				
+					$event['sql'] .= ' AND (' . $this->db->sql_in_set('forum_id', $fullAccessForumIDs, false, true) . '
+					OR topic_poster = ' . (int) $this->user->data['user_id'] . ' ) ';
+					
+				break;
+			}
+			
+			if($event['where_sql'] === 'WHERE'){
+				$event['where_sql'] = 'WHERE ';
+			}
+			
+	}
 		
 		
 	}
