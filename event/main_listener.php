@@ -34,6 +34,7 @@ class main_listener implements EventSubscriberInterface
 			'core.mcp_sorting_query_before'				=> 'phpbb_mcp_sorting_query_before',
 			
 			'core.mcp_front_queue_unapproved_total_before'			=> 'phpbb_mcp_front_queue_unapproved_total_before',
+			'core.mcp_front_view_queue_postid_list_after'			=> 'phpbb_mcp_front_view_queue_postid_list_after',
 			'core.phpbb_content_visibility_get_visibility_sql_before'		=> 'phpbb_content_visibility_get_visibility_sql_before',
 			'core.phpbb_content_visibility_get_forums_visibility_before'	=> 'phpbb_content_visibility_get_forums_visibility_before',
 			
@@ -239,6 +240,47 @@ class main_listener implements EventSubscriberInterface
 		$varHold['WHERE'] = $where_sql;
 		$event['sql_ary'] = $varHold;
 		
+	}
+	
+	public function phpbb_mcp_front_view_queue_postid_list_after($event){
+		
+		if($event['total'] > 0){	
+			$forum_ids = $event['forum_list'];
+			$fullAccessForumIDs = array();
+			foreach($forum_ids AS $forum_id){
+				if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+					$fullAccessForumIDs[] = $forum_id;
+				}
+			}
+			
+			if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+				// Nothing to filter
+				return;
+			}
+			
+			// This query needs to be re-done
+			
+			$sql = 'SELECT post_id
+					FROM 	' . $this->posts_table . ' AS p
+					INNER JOIN ' . $this->topics_table . ' AS t ON
+						p.topic_id = t.topic_id
+					WHERE 
+						' . $this->db->sql_in_set('p.forum_id', $event['forum_list']) . '
+						AND (' . $this->db->sql_in_set('p.forum_id', $fullAccessForumIDs, false, true) . '
+							OR t.topic_poster = ' . (int) $this->user->data['user_id'] . '
+						)
+						AND ' . $this->db->sql_in_set('post_visibility', array(ITEM_UNAPPROVED, ITEM_REAPPROVE)) . '
+					ORDER BY post_time DESC, post_id DESC';
+				$result = $this->db->sql_query_limit($sql, 5);
+
+				while ($row = $this->db->sql_fetchrow($result))
+				{
+					$post_list[] = $row['post_id'];
+				}
+				$this->db->sql_freeresult($result);
+				
+				$event['post_list'] = $post_list;
+		}
 	}
 	public function phpbb_content_visibility_get_visibility_sql_before($event){
 		
