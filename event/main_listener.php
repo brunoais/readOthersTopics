@@ -35,6 +35,8 @@ class main_listener implements EventSubscriberInterface
 			
 			'core.mcp_front_queue_unapproved_total_before'			=> 'phpbb_mcp_front_queue_unapproved_total_before',
 			'core.mcp_front_view_queue_postid_list_after'			=> 'phpbb_mcp_front_view_queue_postid_list_after',
+			'core.mcp_front_reports_count_query_before'			=> 'phpbb_mcp_front_reports_count_query_before',
+			
 			'core.phpbb_content_visibility_get_visibility_sql_before'		=> 'phpbb_content_visibility_get_visibility_sql_before',
 			'core.phpbb_content_visibility_get_forums_visibility_before'	=> 'phpbb_content_visibility_get_forums_visibility_before',
 			
@@ -281,6 +283,36 @@ class main_listener implements EventSubscriberInterface
 				
 				$event['post_list'] = $post_list;
 		}
+	}
+	
+	public function phpbb_mcp_front_reports_count_query_before($event){
+		$forum_ids = $event['forum_list'];
+		$fullAccessForumIDs = array();
+		foreach($forum_ids AS $forum_id){
+			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+				$fullAccessForumIDs[] = $forum_id;
+			}
+		}
+		
+		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+			// Nothing to filter
+			return;
+		}
+		
+		$sql = $event['sql'];
+		
+		$splitedSQL = explode('FROM', $sql, 2);
+		$splitedSQL[1] = ' ' . $this->topics_table . ' t,' . $splitedSQL[1];
+		$sql = implode('FROM', $splitedSQL);
+		
+		$sql .='
+					AND p.topic_id = t.topic_id
+					AND (' . $this->db->sql_in_set('p.forum_id', $fullAccessForumIDs) . '
+					OR t.topic_poster = ' . (int) $this->user->data['user_id'] . '
+		) ';
+		
+		$event['sql'] = $sql;
+		
 	}
 	public function phpbb_content_visibility_get_visibility_sql_before($event){
 		
