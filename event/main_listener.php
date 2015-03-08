@@ -46,6 +46,7 @@ class main_listener implements EventSubscriberInterface
 			
 			'core.display_forums_after'								=> 'phpbb_display_forums_after',
 			'core.viewforum_get_topic_data'							=> 'phpbb_viewforum_get_topic_data',
+			'core.viewforum_get_topic_ids_data'						=> 'phpbb_viewforum_get_topic_ids_data',
 			'core.display_forums_modify_template_vars'				=> 'phpbb_display_forums_modify_template_vars',
 			'core.viewtopic_before_f_read_check'					=> 'phpbb_viewtopic_before_f_read_check',
 			
@@ -486,7 +487,23 @@ class main_listener implements EventSubscriberInterface
 			
 		}
 		
+	}
+	
+	
+	public function phpbb_viewforum_get_topic_ids_data($event){
 		
+		if(	$event['forum_data']['forum_type'] != FORUM_POST &&
+			strpos($event['sql_where'], 't.forum_id IN') === 0 &&
+			!empty($this->infoStorage['ActiveTopicIds']['restrictedAccess'])){
+			
+			$sql_ary = $event['sql_ary'];
+			
+			$sql_ary['WHERE'] .= '
+				AND (' . $this->db->sql_in_set('t.forum_id', $this->infoStorage['ActiveTopicIds']['fullAccess'], false, true) . '
+					OR t.topic_poster = ' . (int) $this->user->data['user_id'] . ' )';
+			
+			$event['sql_ary'] = $sql_ary;
+		}
 	}
 	
 	
