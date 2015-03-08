@@ -414,7 +414,11 @@ class main_listener implements EventSubscriberInterface
 		
 		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id'])){
 			if($event['mode'] === 'topic'){
-				$event['where_sql'] .= ' ' . $event['table_alias'] . 'topic_poster = ' . (int) $this->user->data['user_id'] . ' AND ';
+				$event['where_sql'] .= ' (' . $event['table_alias'] . 'topic_poster = ' . (int) $this->user->data['user_id'] . '
+					OR topic_type = ' . POST_GLOBAL . '
+					OR topic_type = ' . POST_ANNOUNCE . '
+				)
+				AND ';
 			}
 		}
 	}
