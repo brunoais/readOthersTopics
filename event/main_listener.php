@@ -636,10 +636,10 @@ class main_listener implements EventSubscriberInterface
 
 	private function permissionEvaluate($info)
 	{
-		if(!isset($info['forum_id'])){
-			if(isset($info['topic_id'])){
+		if(!isset($info['forum_id']) || $info['forum_id'] == 0){
+			if(isset($info['topic_id']) && $info['topic_id'] != 0){
 				$this->getForumIdAndPosterFromTopic($info);
-			}else if(!isset($info['post_id'])){
+			}else if(!isset($info['post_id']) || $info['post_id'] == 0){
 				$this->getForumIdAndTopicFromPost($info);
 			}
 		}
