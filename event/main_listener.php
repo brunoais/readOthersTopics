@@ -29,6 +29,8 @@ class main_listener implements EventSubscriberInterface
 			
 			'core.report_post_auth'				=> 'phpbb_report_post_auth',
 			
+			'core.get_logs_main_query_before'			=> 'phpbb_get_logs_main_query_before',
+			
 			'core.mcp_global_f_read_auth_after'						=> 'phpbb_mcp_global_f_read_auth_after',
 			'core.mcp_reports_get_reports_query_before'				=> 'phpbb_mcp_reports_get_reports_query_before',
 			'core.mcp_sorting_query_before'				=> 'phpbb_mcp_sorting_query_before',
@@ -150,6 +152,70 @@ class main_listener implements EventSubscriberInterface
 	}
 	
 	
+	public function phpbb_get_logs_main_query_before($event){
+		
+		$permissionResult = NULL;
+		$fullAccessForumIDs = array();
+		
+		if($event['log_type'] == LOG_MOD){
+			if ($event['topic_id']){
+				$permissionResult = $this->permissionEvaluate(array(
+					'topic_id' => $event['topic_id'],
+				));
+				if($permissionResult === true){
+					return;
+				}
+			}else if (is_array($event['forum_id'])){
+				$forum_ids = $event['forum_id'];
+				$fullAccessForumIDs = array();
+				foreach($forum_ids AS $forum_id){
+					if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+							$fullAccessForumIDs[] = $forum_id;
+					}
+				}
+				
+				if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+					// Nothing to filter
+					return;
+				}
+			}else if ($event['forum_id']){
+				if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+					return;
+				}
+			}else{
+				$forum_ids = array_values(array_intersect(get_forum_list('f_read'), get_forum_list('m_')));
+				$fullAccessForumIDs = array();
+				foreach($forum_ids AS $forum_id){
+					if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+							$fullAccessForumIDs[] = $forum_id;
+					}
+				}
+				if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+					// Nothing to filter
+					return;
+				}
+			}
+			
+			$from_sql = $event['get_logs_sql_ary']['FROM'];
+			$where_sql = $event['get_logs_sql_ary']['WHERE'];
+			
+			if(!isset($from_sql[$this->topics_table])){
+				$from_sql[$this->topics_table] = 't';
+				$where_sql = 't.topic_id = l.topic_id
+				AND '. $where_sql;
+			}
+			$where_sql = '(' . $this->db->sql_in_set('t.forum_id', $fullAccessForumIDs, false, true) . '
+			OR t.topic_poster = ' . (int) $this->user->data['user_id'] . ' ) AND '
+			. $where_sql;
+			
+			
+			$varHold = $event['get_logs_sql_ary'];
+			$varHold['FROM'] = $from_sql;
+			$varHold['WHERE'] = $where_sql;
+			$event['get_logs_sql_ary'] = $varHold;
+			
+		}
+	}
 	
 	public function phpbb_mcp_global_f_read_auth_after($event){
 		if($event['forum_id'] && $event['topic_id']){
