@@ -44,6 +44,7 @@ class main_listener implements EventSubscriberInterface
 			'core.phpbb_content_visibility_get_forums_visibility_before'	=> 'phpbb_content_visibility_get_forums_visibility_before',
 			
 			
+			'core.display_forums_after'								=> 'phpbb_display_forums_after',
 			'core.viewforum_get_topic_data'							=> 'phpbb_viewforum_get_topic_data',
 			'core.display_forums_modify_template_vars'				=> 'phpbb_display_forums_modify_template_vars',
 			'core.viewtopic_before_f_read_check'					=> 'phpbb_viewtopic_before_f_read_check',
@@ -443,7 +444,27 @@ class main_listener implements EventSubscriberInterface
 		
 	}
 	
-	
+	public function phpbb_display_forums_after($event){
+		
+		$active_forum_ary = $event['active_forum_ary'];
+		
+		if(empty($active_forum_ary['exclude_forum_id'])){
+			$forum_ids = $active_forum_ary['forum_id'];
+		}else{
+			$forum_ids = array_diff($active_forum_ary['forum_id'], $active_forum_ary['exclude_forum_id']);
+		}
+		
+		$fullAccessForumIDs = array();
+		foreach($forum_ids as $forum_id){
+			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+				$fullAccessForumIDs[] = $forum_id;
+			}
+		}
+		
+		$this->infoStorage['ActiveTopicIds']['fullAccess'] = $fullAccessForumIDs;
+		$this->infoStorage['ActiveTopicIds']['restrictedAccess'] = array_diff($forum_ids, $fullAccessForumIDs);
+		
+	}
 	
 	public function phpbb_viewforum_get_topic_data($event){
 		
