@@ -231,6 +231,7 @@ class main_listener implements EventSubscriberInterface
 			}
 		}
 	}
+	
 	public function phpbb_mcp_reports_get_reports_query_before($event){
 		
 		$forum_ids = $event['forum_list'];
@@ -607,7 +608,6 @@ class main_listener implements EventSubscriberInterface
 	}
 
 	private function getForumIdAndTopicFromPost(&$info){
-		
 		$sql = 'SELECT forum_id, topic_id
 			FROM ' . $this->posts_table . '
 			WHERE post_id = ' . (int) $info['post_id'];
@@ -621,7 +621,6 @@ class main_listener implements EventSubscriberInterface
 	}
 
 	private function getPosterAndTypeFromTopicId(&$info){
-		
 		$sql = 'SELECT topic_poster, topic_type
 			FROM ' . $this->topics_table . '
 			WHERE topic_id = ' . (int) $info['topic_id'];
