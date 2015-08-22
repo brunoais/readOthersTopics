@@ -1058,13 +1058,17 @@ class main_listener implements EventSubscriberInterface
 			if(!isset($info['topic_poster'])){
 				$this->getPosterAndTypeFromTopicId($info);
 			}
-			
-			if(
-				$info['topic_poster'] != $this->user->data['user_id'] &&
-				$info['topic_type'] != POST_ANNOUNCE &&
-				$info['topic_type'] != POST_GLOBAL
-				){
-				return 'NO_READ_OTHER';
+
+			if($info['topic_poster'] != $this->user->data['user_id']){
+				if(!isset($info['topic_type'])){
+					$this->getPosterAndTypeFromTopicId($info);
+				}
+				if(
+					$info['topic_type'] != POST_ANNOUNCE &&
+					$info['topic_type'] != POST_GLOBAL
+					){
+					return 'NO_READ_OTHER';
+				}
 			}
 		}
 		
