@@ -1027,10 +1027,10 @@ class main_listener implements EventSubscriberInterface
 
 	private function permissionEvaluate($info)
 	{
-		if(!isset($info['forum_id']) || $info['forum_id'] == 0){
-			if(isset($info['topic_id']) && $info['topic_id'] != 0){
+		if(empty($info['forum_id'])){
+			if(!empty($info['topic_id'])){
 				$this->getForumIdAndPosterFromTopic($info);
-			}else if(!isset($info['post_id']) || $info['post_id'] == 0){
+			}else if(!empty($info['post_id'])){
 				$this->getForumIdAndTopicFromPost($info);
 			}
 		}
