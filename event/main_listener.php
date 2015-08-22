@@ -463,7 +463,11 @@ class main_listener implements EventSubscriberInterface
 		$active_forum_ary = $event['active_forum_ary'];
 		
 		if(empty($active_forum_ary['exclude_forum_id'])){
-			$forum_ids = $active_forum_ary['forum_id'];
+			if(empty($active_forum_ary['forum_id'])){
+				$forum_ids = array();
+			}else{
+				$forum_ids = $active_forum_ary['forum_id'];
+			}
 		}else{
 			$forum_ids = array_diff($active_forum_ary['forum_id'], $active_forum_ary['exclude_forum_id']);
 		}
