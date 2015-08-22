@@ -53,6 +53,7 @@ class main_listener implements EventSubscriberInterface
 			'core.search_modify_rowset'								=> 'search_modify_rowset',
 			
 			
+			'core.search_mysql_keywords_main_query_before'			=> 'search_mysql_keywords_main_query_before',
 		);
 	}
 
@@ -580,6 +581,60 @@ class main_listener implements EventSubscriberInterface
 		$event['rowset'] = $rowset;
 		
 		
+	public function search_mysql_keywords_main_query_before($event){
+		$topic_id = $event['topic_id'];
+
+		if(empty($topic_id)){
+
+			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
+
+			$ex_fid_keys = array_keys($event['ex_fid_ary']);
+
+			$partial_read_access_fids = $full_read_access_fids = array();
+
+			foreach($forums_permissions as $forum_id => $forum_permissions){
+
+				if(isset($forum_permissions['f_read']) &&
+					!isset($ex_fid_keys[$forum_id])){
+					if(isset($forum_permissions['f_read_others_topics_brunoais'])){
+						$full_read_access_fids[$forum_id] = $forum_id;
+					}else{
+						$partial_read_access_fids[$forum_id] = $forum_id;
+					}
+				}
+			}
+
+			if(sizeof($partial_read_access_fids) > 0){
+				// The filter has to be in place
+				$event['join_topic'] = true;
+
+				$sql_match_where = $event['sql_match_where'];
+
+				$sql_match_where .= ' AND (' . $this->db->sql_in_set('t.forum_id', $full_read_access_fids, false, true) . '
+					OR t.topic_poster = ' . (int) $this->user->data['user_id'] . ' )';
+
+				$event['sql_match_where'] = $sql_match_where;
+
+			}
+
+
+		}else{
+			$permissionResult = $this->permissionEvaluate(array(
+				'topic_id' => $topic_id,
+			));
+
+			if($permissionResult === 'NO_READ_OTHER'){
+				$event['join_topic'] = true;
+
+				$sql_match_where = $event['sql_match_where'];
+
+				$sql_match_where .= ' AND t.topic_poster = ' . (int) $this->user->data['user_id'];
+
+				$event['sql_match_where'] = $sql_match_where;
+			}
+		}
+	}
+
 	}
 	
 	
