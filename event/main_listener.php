@@ -592,6 +592,9 @@ class main_listener implements EventSubscriberInterface
 		$event['rowset'] = $rowset;
 		
 		
+
+	}
+
 	public function search_mysql_keywords_main_query_before($event){
 		$topic_id = $event['topic_id'];
 
