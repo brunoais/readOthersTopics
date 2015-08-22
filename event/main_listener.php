@@ -990,15 +990,16 @@ class main_listener implements EventSubscriberInterface
 	}
 
 	private function getForumIdAndPosterFromTopic(&$info){
-		$sql = 'SELECT forum_id, topic_poster
+		$sql = 'SELECT forum_id, topic_poster, topic_type
 			FROM ' . $this->topics_table . '
 			WHERE topic_id = ' . (int) $info['topic_id'];
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
-		
+
 		$info['forum_id'] = $row['forum_id'];
 		$info['topic_poster'] = $row['topic_poster'];
-		
+		$info['topic_type'] = $row['topic_type'];
+
 		$this->db->sql_freeresult($result);
 	}
 
