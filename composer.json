@@ -2,7 +2,7 @@
 	"name": "brunoais/readOthersTopics",
 	"type": "phpbb-extension",
 	"description": "An extension which allows you to restrict topic viewing to who made the first post and who has this permission",
-	"homepage": "N/A",
+	"homepage": "https://github.com/brunoais/",
 	"version": "0.5.0a",
 	"keywords": ["phpbb", "extension", "permission", "topic"],
 	"license": "GPL-2.0",
