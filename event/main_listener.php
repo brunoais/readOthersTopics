@@ -423,7 +423,7 @@ class main_listener implements EventSubscriberInterface
 
 		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id'])){
 			if($event['mode'] === 'topic'){
-				$event['where_sql'] .= ' (' . $event['table_alias'] . 'topic_poster = ' . (int) $this->user->data['user_id'] . '
+				$event['where_sql'] .= ' (' . $event['table_alias'] . ' topic_poster = ' . (int) $this->user->data['user_id'] . '
 					OR topic_type = ' . POST_GLOBAL . '
 					OR topic_type = ' . POST_ANNOUNCE . '
 				)
@@ -452,7 +452,7 @@ class main_listener implements EventSubscriberInterface
 			}
 
 			$event['where_sql'] .= ' (' . $this->db->sql_in_set($event['table_alias'] . 'forum_id', $fullAccessForumIDs) . '
-				OR ' . $event['table_alias'] . 'topic_poster = ' . (int) $this->user->data['user_id'] . ' ) AND ';
+				OR ' . $event['table_alias'] . ' topic_poster = ' . (int) $this->user->data['user_id'] . ' ) AND ';
 
 		}
 
