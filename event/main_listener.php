@@ -860,6 +860,11 @@ class main_listener implements EventSubscriberInterface
 					$event['firstpost_only'] = true;
 					$event['sql_firstpost'] = ' AND p.post_id = t.topic_id';
 				}
+				
+				$sql_sort_table = $event['sql_sort_table'];
+				$sql_sort_table .= TOPICS_TABLE . ' t_brunoais, ';
+				$event['sql_sort_table'] = $sql_sort_table;
+
 
 				$sql_fora = $event['sql_fora'];
 
