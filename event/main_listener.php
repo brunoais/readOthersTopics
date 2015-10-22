@@ -345,7 +345,7 @@ class main_listener implements EventSubscriberInterface
 					INNER JOIN ' . $this->topics_table . ' AS t ON
 						p.topic_id = t.topic_id
 					WHERE
-						' . $this->db->sql_in_set('p.forum_id', $event['forum_list']) . '
+						' . $this->db->sql_in_set('p.forum_id', $event['forum_list'], true) . '
 						AND (' . $this->db->sql_in_set('p.forum_id', $fullAccessForumIDs, false, true) . '
 							OR t.topic_poster = ' . (int) $this->user->data['user_id'] . '
 						)
@@ -385,7 +385,7 @@ class main_listener implements EventSubscriberInterface
 
 		$sql .='
 					AND p.topic_id = t.topic_id
-					AND (' . $this->db->sql_in_set('p.forum_id', $fullAccessForumIDs) . '
+					AND (' . $this->db->sql_in_set('p.forum_id', $fullAccessForumIDs, true) . '
 					OR t.topic_poster = ' . (int) $this->user->data['user_id'] . '
 		) ';
 
@@ -451,7 +451,7 @@ class main_listener implements EventSubscriberInterface
 				return;
 			}
 
-			$event['where_sql'] .= ' (' . $this->db->sql_in_set($event['table_alias'] . 'forum_id', $fullAccessForumIDs) . '
+			$event['where_sql'] .= ' (' . $this->db->sql_in_set($event['table_alias'] . 'forum_id', $fullAccessForumIDs, false, true) . '
 				OR ' . $event['table_alias'] . ' topic_poster = ' . (int) $this->user->data['user_id'] . ' ) AND ';
 
 		}
