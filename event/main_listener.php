@@ -837,7 +837,9 @@ class main_listener implements EventSubscriberInterface
 
 			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
 
-			$ex_fid_keys = array_keys($event['ex_fid_ary']);
+			$ex_fid_ary = $event['ex_fid_ary'];
+			
+			$ex_fid_keys = array_flip($ex_fid_ary);
 
 			$partial_read_access_fids = $full_read_access_fids = array();
 
