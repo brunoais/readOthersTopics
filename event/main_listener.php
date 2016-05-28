@@ -343,6 +343,9 @@ class main_listener implements EventSubscriberInterface
 				return;
 			}
 
+			// This variable needs to exist
+			$post_list = array();
+			
 			// This query needs to be re-done
 
 			$sql = 'SELECT post_id
