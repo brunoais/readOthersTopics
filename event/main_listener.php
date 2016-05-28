@@ -15,8 +15,8 @@ namespace brunoais\readOthersTopics\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class Accesses{
-	const NO_READ_OTHER == 'NO_READ_OTHER';
-	const NO_READ == 'NO_READ';
+	const NO_READ_OTHER = 'NO_READ_OTHER';
+	const NO_READ = 'NO_READ';
 }
 
 /**
