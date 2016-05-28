@@ -14,6 +14,11 @@ namespace brunoais\readOthersTopics\event;
 */
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+class Accesses{
+	const NO_READ_OTHER == 'NO_READ_OTHER';
+	const NO_READ == 'NO_READ';
+}
+
 /**
 * Event listener
 */
@@ -126,7 +131,7 @@ class main_listener implements EventSubscriberInterface
 			'topic_poster' => $event['topic_poster'],
 		));
 
-		if($permissionResult === 'NO_READ_OTHER'){
+		if($permissionResult === Accesses::NO_READ_OTHER){
 			trigger_error('NOT_AUTHORISED');
 		}
 	}
@@ -140,7 +145,7 @@ class main_listener implements EventSubscriberInterface
 				'post_id' => $event['post_id'],
 			));
 
-			if($permissionResult === 'NO_READ_OTHER'){
+			if($permissionResult === Accesses::NO_READ_OTHER){
 				trigger_error('NOT_AUTHORISED');
 			}
 		}
@@ -156,7 +161,7 @@ class main_listener implements EventSubscriberInterface
 			'topic_type' => $event['report_data']['topic_type'],
 		));
 
-		if($permissionResult === 'NO_READ_OTHER'){
+		if($permissionResult === Accesses::NO_READ_OTHER){
 			trigger_error('POST_NOT_EXIST');
 		}
 	}
@@ -234,7 +239,7 @@ class main_listener implements EventSubscriberInterface
 				'topic_id' => $event['topic_id'],
 			));
 
-			if($permissionResult === 'NO_READ_OTHER'){
+			if($permissionResult === Accesses::NO_READ_OTHER){
 				trigger_error('NOT_AUTHORISED');
 			}
 		}
@@ -561,7 +566,7 @@ class main_listener implements EventSubscriberInterface
 		));
 
 
-		if($permissionResult === 'NO_READ_OTHER'){
+		if($permissionResult === Accesses::NO_READ_OTHER){
 			$this->accessFailed();
 		}
 
@@ -581,7 +586,7 @@ class main_listener implements EventSubscriberInterface
 				'topic_type' => $row['topic_type'],
 			));
 
-			if($permissionResult === 'NO_READ_OTHER'){
+			if($permissionResult === Accesses::NO_READ_OTHER){
 				unset($rowset[$key]);
 			}
 
@@ -634,7 +639,7 @@ class main_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === 'NO_READ_OTHER'){
+			if($permissionResult === Accesses::NO_READ_OTHER){
 				$event['join_topic'] = true;
 
 				$sql_match_where = $event['sql_match_where'];
@@ -689,7 +694,7 @@ class main_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === 'NO_READ_OTHER'){
+			if($permissionResult === Accesses::NO_READ_OTHER){
 				$event['total_results'] = -1;
 				$event['left_join_topics'] = true;
 
@@ -744,7 +749,7 @@ class main_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === 'NO_READ_OTHER'){
+			if($permissionResult === Accesses::NO_READ_OTHER){
 				$event['join_topic'] = true;
 
 				$sql_match_where = $event['sql_match_where'];
@@ -808,7 +813,7 @@ class main_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === 'NO_READ_OTHER'){
+			if($permissionResult === Accesses::NO_READ_OTHER){
 
 				// Workaround for a mistake I made myself when making the event.
 				$sql_sort_join = $event['sql_sort_join'];
@@ -882,7 +887,7 @@ class main_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === 'NO_READ_OTHER'){
+			if($permissionResult === Accesses::NO_READ_OTHER){
 
 				// Workaround for a mistake I made myself when making the event.
 				$sql_sort_join = $event['sql_sort_join'];
@@ -957,7 +962,7 @@ class main_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === 'NO_READ_OTHER'){
+			if($permissionResult === Accesses::NO_READ_OTHER){
 
 				// Workaround for a mistake I made myself when making the event.
 				$sql_sort_join = $event['sql_sort_join'];
@@ -1045,13 +1050,13 @@ class main_listener implements EventSubscriberInterface
 		}
 
 		if(!$this->auth->acl_get('f_read', $info['forum_id'])){
-			return 'NO_READ';
+			return Accesses::NO_READ;
 		}
 
 
 		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $info['forum_id'])){
 			if($this->user->data['user_id'] == ANONYMOUS){
-				return 'NO_READ_OTHER';
+				return Accesses::NO_READ_OTHER;
 			}
 
 			if(
@@ -1076,7 +1081,7 @@ class main_listener implements EventSubscriberInterface
 					$info['topic_type'] != POST_ANNOUNCE &&
 					$info['topic_type'] != POST_GLOBAL
 					){
-					return 'NO_READ_OTHER';
+					return Accesses::NO_READ_OTHER;
 				}
 			}
 		}
