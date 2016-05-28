@@ -27,22 +27,22 @@ class main_listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
-			'core.ucp_pm_compose_compose_pm_basic_info_query_before'		=> 'phpbb_ucp_pm_compose_compose_pm_basic_info_query_before',
-			'core.ucp_pm_compose_quotepost_query_after'						=> 'phpbb_ucp_pm_compose_quotepost_query_after',
+			'core.ucp_pm_compose_compose_pm_basic_info_query_before'	=> 'phpbb_ucp_pm_compose_compose_pm_basic_info_query_before',
+			'core.ucp_pm_compose_quotepost_query_after'					=> 'phpbb_ucp_pm_compose_quotepost_query_after',
 
-			'core.modify_posting_auth'			=> 'phpbb_modify_posting_auth',
+			'core.modify_posting_auth'								=> 'phpbb_modify_posting_auth',
 
-			'core.report_post_auth'				=> 'phpbb_report_post_auth',
+			'core.report_post_auth'									=> 'phpbb_report_post_auth',
 
-			'core.get_logs_main_query_before'			=> 'phpbb_get_logs_main_query_before',
+			'core.get_logs_main_query_before'						=> 'phpbb_get_logs_main_query_before',
 
 			'core.mcp_global_f_read_auth_after'						=> 'phpbb_mcp_global_f_read_auth_after',
 			'core.mcp_reports_get_reports_query_before'				=> 'phpbb_mcp_reports_get_reports_query_before',
-			'core.mcp_sorting_query_before'				=> 'phpbb_mcp_sorting_query_before',
+			'core.mcp_sorting_query_before'							=> 'phpbb_mcp_sorting_query_before',
 
 			'core.mcp_front_queue_unapproved_total_before'			=> 'phpbb_mcp_front_queue_unapproved_total_before',
 			'core.mcp_front_view_queue_postid_list_after'			=> 'phpbb_mcp_front_view_queue_postid_list_after',
-			'core.mcp_front_reports_count_query_before'			=> 'phpbb_mcp_front_reports_count_query_before',
+			'core.mcp_front_reports_count_query_before'				=> 'phpbb_mcp_front_reports_count_query_before',
 			'core.mcp_front_reports_listing_query_before'			=> 'phpbb_mcp_front_reports_listing_query_before',
 
 			'core.phpbb_content_visibility_get_visibility_sql_before'		=> 'phpbb_content_visibility_get_visibility_sql_before',
