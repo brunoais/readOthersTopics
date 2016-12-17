@@ -449,7 +449,6 @@ class main_listener implements EventSubscriberInterface
 			$fullAccessForumIDs = array();
 
 			foreach($forum_ids AS $forum_id){
-				// var_dump($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id));
 				if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
 						$fullAccessForumIDs[] = $forum_id;
 				}
@@ -582,6 +581,7 @@ class main_listener implements EventSubscriberInterface
 	public function search_backend_search_after($event){
 		
 		$not_searched_fids = $event['ex_fid_ary'];
+		$search_kind = $event['search_kind'];
 		
 		if($search_kind != 'keyword_search' && $search_kind != 'author_search'){
 			// SHOULD NOT HAPPEN!!!
@@ -591,8 +591,6 @@ class main_listener implements EventSubscriberInterface
 		$unset_total = 0;
 		
 		$not_searched_fids = $event['ex_fid_ary'];
-		
-		var_dump($not_searched_fids);
 		
 		$topic_id = $event['topic_id'];
 		
