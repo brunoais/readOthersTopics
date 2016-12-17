@@ -585,7 +585,7 @@ class main_listener implements EventSubscriberInterface
 		
 		if($search_kind != 'keyword_search' && $search_kind != 'author_search'){
 			// SHOULD NOT HAPPEN!!!
-			throw new Exception('Unexpected $search_kind found: ' . $search_kind);
+			throw new \Exception('Unexpected $search_kind found: ' . $search_kind);
 		}
 		
 		$unset_total = 0;
