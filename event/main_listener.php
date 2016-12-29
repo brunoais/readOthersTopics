@@ -57,7 +57,7 @@ class main_listener implements EventSubscriberInterface
 
 			'core.search_modify_rowset'								=> 'search_modify_rowset',
 
-			'core.search_backend_search_after'						=> 'search_backend_search_after',
+			'core.search_backend_search_aftered'						=> 'search_backend_search_after',
 
 			'core.search_mysql_keywords_main_query_before'			=> 'search_mysql_keywords_main_query_before',
 			'core.search_native_keywords_count_query_before'		=> 'search_native_keywords_count_query_before',
@@ -578,7 +578,7 @@ class main_listener implements EventSubscriberInterface
 
 	}
 
-	public function search_backend_search_after($event){
+	public function search_backend_search_aftered($event){
 		
 		$not_searched_fids = $event['ex_fid_ary'];
 		$search_kind = $event['search_kind'];
