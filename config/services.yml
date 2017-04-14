@@ -2,60 +2,60 @@ services:
     brunoais.readOthersTopics.shared.permission_evaluation:
         class: brunoais\readOthersTopics\shared\permission_evaluation
         arguments:
-            - @auth
-            - @content.visibility
-            - @dbal.conn
-            - @template
-            - @user
-            - @brunoais.readOthersTopics.shared.accesses
-            - %tables.forums%
-            - %tables.topics%
-            - %tables.posts%
+            - '@auth'
+            - '@content.visibility'
+            - '@dbal.conn'
+            - '@template'
+            - '@user'
+            - '@brunoais.readOthersTopics.shared.accesses'
+            - '%tables.forums%'
+            - '%tables.topics%'
+            - '%tables.posts%'
     brunoais.readOthersTopics.shared.accesses:
         class: brunoais\readOthersTopics\shared\accesses
     brunoais.readOthersTopics.event.main_listener:
         class: brunoais\readOthersTopics\event\main_listener
         arguments:
-            - @auth
-            - @content.visibility
-            - @dbal.conn
-            - @template
-            - @user
-            - @brunoais.readOthersTopics.shared.accesses
-            - @brunoais.readOthersTopics.shared.permission_evaluation
-            - %tables.forums%
-            - %tables.topics%
-            - %tables.posts%
+            - '@auth'
+            - '@content.visibility'
+            - '@dbal.conn'
+            - '@template'
+            - '@user'
+            - '@brunoais.readOthersTopics.shared.accesses'
+            - '@brunoais.readOthersTopics.shared.permission_evaluation'
+            - '%tables.forums%'
+            - '%tables.topics%'
+            - '%tables.posts%'
         tags:
             - { name: event.listener }
     brunoais.readOthersTopics.event.mcp_listener:
         class: brunoais\readOthersTopics\event\mcp_listener
         arguments:
-            - @auth
-            - @content.visibility
-            - @dbal.conn
-            - @template
-            - @user
-            - @brunoais.readOthersTopics.shared.accesses
-            - @brunoais.readOthersTopics.shared.permission_evaluation
-            - %tables.forums%
-            - %tables.topics%
-            - %tables.posts%
+            - '@auth'
+            - '@content.visibility'
+            - '@dbal.conn'
+            - '@template'
+            - '@user'
+            - '@brunoais.readOthersTopics.shared.accesses'
+            - '@brunoais.readOthersTopics.shared.permission_evaluation'
+            - '%tables.forums%'
+            - '%tables.topics%'
+            - '%tables.posts%'
         tags:
             - { name: event.listener }
     brunoais.readOthersTopics.event.search_listener:
         class: brunoais\readOthersTopics\event\search_listener
         arguments:
-            - @auth
-            - @content.visibility
-            - @dbal.conn
-            - @template
-            - @user
-            - @brunoais.readOthersTopics.shared.accesses
-            - @brunoais.readOthersTopics.shared.permission_evaluation
-            - %tables.forums%
-            - %tables.topics%
-            - %tables.posts%
+            - '@auth'
+            - '@content.visibility'
+            - '@dbal.conn'
+            - '@template'
+            - '@user'
+            - '@brunoais.readOthersTopics.shared.accesses'
+            - '@brunoais.readOthersTopics.shared.permission_evaluation'
+            - '%tables.forums%'
+            - '%tables.topics%'
+            - '%tables.posts%'
         tags:
             - { name: event.listener }
     brunoais.readOthersTopics.event.language_listener:

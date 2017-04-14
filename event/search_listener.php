@@ -111,11 +111,8 @@ class search_listener implements EventSubscriberInterface
 			if($permissionResult === $accesses::NO_READ_OTHER){
 				unset($rowset[$key]);
 			}
-
 		}
-		
 		$event['rowset'] = $rowset;
-
 	}
 
 	public function search_mysql_keywords_main_query_before($event){
