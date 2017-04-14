@@ -12,6 +12,32 @@ services:
             - %tables.posts%
         tags:
             - { name: event.listener }
+    brunoais.readOthersTopics.event.mcp_listener:
+        class: brunoais\readOthersTopics\event\mcp_listener
+        arguments:
+            - @auth
+            - @content.visibility
+            - @dbal.conn
+            - @template
+            - @user
+            - %tables.forums%
+            - %tables.topics%
+            - %tables.posts%
+        tags:
+            - { name: event.listener }
+    brunoais.readOthersTopics.event.search_listener:
+        class: brunoais\readOthersTopics\event\search_listener
+        arguments:
+            - @auth
+            - @content.visibility
+            - @dbal.conn
+            - @template
+            - @user
+            - %tables.forums%
+            - %tables.topics%
+            - %tables.posts%
+        tags:
+            - { name: event.listener }
     brunoais.readOthersTopics.event.language_listener:
         class: brunoais\readOthersTopics\event\language_listener
         tags:

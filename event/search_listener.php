@@ -1,0 +1,600 @@
+<?php
+/**
+*
+* @package phpBB Extension - brunoais readOthersTopics
+* @copyright (c) 2015 phpBB Group
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+*
+*/
+
+namespace brunoais\readOthersTopics\event;
+
+/**
+* @ignore
+*/
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+/**
+* Event listener
+*/
+class search_listener implements EventSubscriberInterface
+{
+	static public function getSubscribedEvents()
+	{
+		return array(
+			'core.search_modify_rowset'								=> 'search_modify_rowset',
+
+			'core.search_backend_search_aftered'						=> 'search_backend_search_after',
+
+			'core.search_mysql_keywords_main_query_before'			=> 'search_mysql_keywords_main_query_before',
+			'core.search_native_keywords_count_query_before'		=> 'search_native_keywords_count_query_before',
+			'core.search_postgres_keywords_main_query_before'		=> 'search_postgres_keywords_main_query_before',
+
+			'core.search_mysql_author_query_before'					=> 'search_mysql_author_query_before',
+			'core.search_native_author_count_query_before'			=> 'search_native_author_count_query_before',
+			'core.search_postgres_author_count_query_before'		=> 'search_postgres_author_count_query_before',
+
+		);
+	}
+
+	protected $infoStorage;
+
+	/* @var \phpbb\auth\auth */
+	protected $auth;
+
+	/* @var \phpbb\user */
+	protected $user;
+
+	/* @var \phpbb\content_visibility */
+	protected $phpbb_content_visibility;
+
+	/* @var \phpbb\db\driver\driver_interface */
+	protected $db;
+
+	/* @var \phpbb\template\template */
+	protected $template;
+
+	/* Tables */
+	public $forums_table;
+	public $topics_table;
+	public $posts_table;
+
+	/**
+	* Constructor
+	*
+	* @param	\phpbb\auth\auth					$auth	Auth object
+	* @param	\phpbb\user							$user	User object
+	* @param	\phpbb\db\driver\driver_interface	$db		Database object
+	*/
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\content_visibility $content_visibility, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user, $forums_table, $topics_table, $posts_table)
+	{
+		$this->auth = $auth;
+		$this->phpbb_content_visibility = $content_visibility;
+		$this->db = $db;
+		$this->user = $user;
+		$this->template = $template;
+		$this->forums_table = $forums_table;
+		$this->topics_table = $topics_table;
+		$this->posts_table = $posts_table;
+
+		$this->infoStorage = array();
+	}
+
+	public function search_modify_rowset($event){
+
+		$rowset = $event['rowset'];
+
+		foreach($rowset AS $key => $row){
+			$permissionResult = $this->permissionEvaluate(array(
+				'forum_id' => $row['forum_id'],
+				'topic_poster' => $row['topic_poster'],
+				'topic_type' => $row['topic_type'],
+			));
+
+			if($permissionResult === Accesses::NO_READ_OTHER){
+				unset($rowset[$key]);
+			}
+
+		}
+		
+		$event['rowset'] = $rowset;
+
+	}
+
+	public function search_mysql_keywords_main_query_before($event){
+		$topic_id = $event['topic_id'];
+
+		if(empty($topic_id)){
+
+			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
+
+			$ex_fid_keys = array_keys($event['ex_fid_ary']);
+
+			$partial_read_access_fids = $full_read_access_fids = array();
+
+			foreach($forums_permissions as $forum_id => $forum_permissions){
+
+				if(isset($forum_permissions['f_read']) &&
+					!isset($ex_fid_keys[$forum_id])){
+					if(isset($forum_permissions['f_read_others_topics_brunoais'])){
+						$full_read_access_fids[$forum_id] = $forum_id;
+					}else{
+						$partial_read_access_fids[$forum_id] = $forum_id;
+					}
+				}
+			}
+
+			if(sizeof($partial_read_access_fids) > 0){
+				// The filter has to be in place
+				$event['join_topic'] = true;
+
+				$sql_match_where = $event['sql_match_where'];
+
+				$sql_match_where .= ' AND (' . $this->db->sql_in_set('t.forum_id', $full_read_access_fids, false, true) . '
+					OR t.topic_poster = ' . (int) $this->user->data['user_id'] . ' )';
+
+				$event['sql_match_where'] = $sql_match_where;
+
+			}
+
+
+		}else{
+			$permissionResult = $this->permissionEvaluate(array(
+				'topic_id' => $topic_id,
+			));
+
+			if($permissionResult === Accesses::NO_READ_OTHER){
+				$event['join_topic'] = true;
+
+				$sql_match_where = $event['sql_match_where'];
+
+				$sql_match_where .= ' AND t.topic_poster = ' . (int) $this->user->data['user_id'];
+
+				$event['sql_match_where'] = $sql_match_where;
+			}
+		}
+	}
+
+	public function search_native_keywords_count_query_before($event){
+		$topic_id = $event['topic_id'];
+
+		if(empty($topic_id)){
+
+			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
+
+			$ex_fid_keys = array_keys($event['ex_fid_ary']);
+
+			$partial_read_access_fids = $full_read_access_fids = array();
+
+			foreach($forums_permissions as $forum_id => $forum_permissions){
+
+				if(isset($forum_permissions['f_read']) &&
+					!isset($ex_fid_keys[$forum_id])){
+					if(isset($forum_permissions['f_read_others_topics_brunoais'])){
+						$full_read_access_fids[$forum_id] = $forum_id;
+					}else{
+						$partial_read_access_fids[$forum_id] = $forum_id;
+					}
+				}
+			}
+
+			if(sizeof($partial_read_access_fids) > 0){
+				// The filter has to be in place
+				$event['total_results'] = false;
+				$event['left_join_topics'] = true;
+
+				$sql_where = $event['sql_where'];
+
+				$sql_where[] = '(' . $this->db->sql_in_set('t.forum_id', $full_read_access_fids, false, true) . '
+					OR t.topic_poster = ' . (int) $this->user->data['user_id'] . ' )';
+
+				$event['sql_where'] = $sql_where;
+
+			}
+
+
+		}else{
+			$permissionResult = $this->permissionEvaluate(array(
+				'topic_id' => $topic_id,
+			));
+
+			if($permissionResult === Accesses::NO_READ_OTHER){
+				$event['total_results'] = -1;
+				$event['left_join_topics'] = true;
+
+				$sql_where = $event['sql_where'];
+
+				$sql_where[] = 't.topic_poster = ' . (int) $this->user->data['user_id'];
+
+				$event['sql_where'] = $sql_where;
+			}
+		}
+	}
+
+	public function search_postgres_keywords_main_query_before($event){
+		$topic_id = $event['topic_id'];
+
+		if(empty($topic_id)){
+
+			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
+
+			$ex_fid_keys = array_keys($event['ex_fid_ary']);
+
+			$partial_read_access_fids = $full_read_access_fids = array();
+
+			foreach($forums_permissions as $forum_id => $forum_permissions){
+
+				if(isset($forum_permissions['f_read']) &&
+					!isset($ex_fid_keys[$forum_id])){
+					if(isset($forum_permissions['f_read_others_topics_brunoais'])){
+						$full_read_access_fids[$forum_id] = $forum_id;
+					}else{
+						$partial_read_access_fids[$forum_id] = $forum_id;
+					}
+				}
+			}
+
+			if(sizeof($partial_read_access_fids) > 0){
+				// The filter has to be in place
+				$event['join_topic'] = true;
+
+				$sql_match_where = $event['sql_match_where'];
+
+				$sql_match_where .= ' AND (' . $this->db->sql_in_set('t.forum_id', $full_read_access_fids, false, true) . '
+					OR t.topic_poster = ' . (int) $this->user->data['user_id'] . ' )';
+
+				$event['sql_match_where'] = $sql_match_where;
+
+			}
+
+
+		}else{
+			$permissionResult = $this->permissionEvaluate(array(
+				'topic_id' => $topic_id,
+			));
+
+			if($permissionResult === Accesses::NO_READ_OTHER){
+				$event['join_topic'] = true;
+
+				$sql_match_where = $event['sql_match_where'];
+
+				$sql_match_where .= ' AND t.topic_poster = ' . (int) $this->user->data['user_id'];
+
+				$event['sql_match_where'] = $sql_match_where;
+			}
+		}
+	}
+
+	public function search_mysql_author_query_before($event){
+
+		$topic_id = $event['topic_id'];
+
+		if(empty($topic_id)){
+
+			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
+
+			$ex_fid_keys = array_keys($event['ex_fid_ary']);
+
+			$partial_read_access_fids = $full_read_access_fids = array();
+
+			foreach($forums_permissions as $forum_id => $forum_permissions){
+
+				if(isset($forum_permissions['f_read']) &&
+					!isset($ex_fid_keys[$forum_id])){
+					if(isset($forum_permissions['f_read_others_topics_brunoais'])){
+						$full_read_access_fids[$forum_id] = $forum_id;
+					}else{
+						$partial_read_access_fids[$forum_id] = $forum_id;
+					}
+				}
+			}
+
+			if(sizeof($partial_read_access_fids) > 0){
+				// The filter has to be in place
+
+				// Workaround for a mistake I made myself when making the event.
+				$sql_sort_join = $event['sql_sort_join'];
+				$sql_sort_join .= ' AND t_brunoais.topic_id = p.topic_id ';
+				$event['sql_sort_join'] = $sql_sort_join;
+
+				$sql_sort_table = $event['sql_sort_table'];
+				$sql_sort_table .= TOPICS_TABLE . ' t_brunoais, ';
+				$event['sql_sort_table'] = $sql_sort_table;
+
+
+				$sql_fora = $event['sql_fora'];
+
+				$sql_fora .= ' AND (' . $this->db->sql_in_set('t_brunoais.forum_id', $full_read_access_fids, false, true) . '
+					OR t_brunoais.topic_poster = ' . (int) $this->user->data['user_id'] . ' )';
+
+				$event['sql_fora'] = $sql_fora;
+
+			}
+
+
+		}else{
+			$permissionResult = $this->permissionEvaluate(array(
+				'topic_id' => $topic_id,
+			));
+
+			if($permissionResult === Accesses::NO_READ_OTHER){
+
+				// Workaround for a mistake I made myself when making the event.
+				$sql_sort_join = $event['sql_sort_join'];
+				$sql_sort_join .= ' AND t_brunoais.topic_id = p.topic_id ';
+				$event['sql_sort_join'] = $sql_sort_join;
+
+				$sql_sort_table = $event['sql_sort_table'];
+				$sql_sort_table .= TOPICS_TABLE . ' t_brunoais, ';
+				$event['sql_sort_table'] = $sql_sort_table;
+
+
+				$sql_fora = $event['sql_fora'];
+
+				$sql_fora .= ' AND t.topic_poster = ' . (int) $this->user->data['user_id'];
+
+				$event['sql_fora'] = $sql_fora;
+			}
+		}
+	}
+
+	public function search_native_author_count_query_before($event){
+
+		$topic_id = $event['topic_id'];
+
+		if(empty($topic_id)){
+
+			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
+
+			$ex_fid_ary = $event['ex_fid_ary'];
+			
+			$ex_fid_keys = array_flip($ex_fid_ary);
+
+			$partial_read_access_fids = $full_read_access_fids = array();
+
+			foreach($forums_permissions as $forum_id => $forum_permissions){
+
+				if(isset($forum_permissions['f_read']) &&
+					!isset($ex_fid_keys[$forum_id])){
+					if(isset($forum_permissions['f_read_others_topics_brunoais'])){
+						$full_read_access_fids[$forum_id] = $forum_id;
+					}else{
+						$partial_read_access_fids[$forum_id] = $forum_id;
+					}
+				}
+			}
+
+
+			if(sizeof($partial_read_access_fids) > 0){
+				// The filter has to be in place
+
+				if ($event['type'] == 'posts' && !$event['firstpost_only']){
+					$event['firstpost_only'] = true;
+					$event['sql_firstpost'] = ' AND p.topic_id = t.topic_id';
+				}
+				
+				$sql_sort_table = $event['sql_sort_table'];
+				$sql_sort_table .= TOPICS_TABLE . ' t_brunoais, ';
+				$event['sql_sort_table'] = $sql_sort_table;
+
+
+				$sql_fora = $event['sql_fora'];
+				$sql_fora .= ' AND t_brunoais.topic_id = p.topic_id ';
+				$sql_fora .= ' AND (' . $this->db->sql_in_set('t_brunoais.forum_id', $full_read_access_fids, false, true) . '
+					OR t_brunoais.topic_poster = ' . (int) $this->user->data['user_id'] . ' )';
+
+				$event['sql_fora'] = $sql_fora;
+			}
+
+
+		}else{
+			$permissionResult = $this->permissionEvaluate(array(
+				'topic_id' => $topic_id,
+			));
+
+			if($permissionResult === Accesses::NO_READ_OTHER){
+
+				// Workaround for a mistake I made myself when making the event.
+				$sql_sort_join = $event['sql_sort_join'];
+				$sql_sort_join .= ' AND t_brunoais.topic_id = p.topic_id ';
+				$event['sql_sort_join'] = $sql_sort_join;
+
+				$sql_sort_table = $event['sql_sort_table'];
+				$sql_sort_table .= TOPICS_TABLE . ' t_brunoais, ';
+				$event['sql_sort_table'] = $sql_sort_table;
+
+
+				$sql_fora = $event['sql_fora'];
+
+				$sql_fora .= ' AND t_brunoais.topic_poster = ' . (int) $this->user->data['user_id'];
+
+				$event['sql_fora'] = $sql_fora;
+				
+			}
+		}
+
+	}
+
+
+	public function search_postgres_author_count_query_before($event){
+
+		$topic_id = $event['topic_id'];
+
+		if(empty($topic_id)){
+
+			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
+
+			$ex_fid_keys = array_keys($event['ex_fid_ary']);
+
+			$partial_read_access_fids = $full_read_access_fids = array();
+
+			foreach($forums_permissions as $forum_id => $forum_permissions){
+
+				if(isset($forum_permissions['f_read']) &&
+					!isset($ex_fid_keys[$forum_id])){
+					if(isset($forum_permissions['f_read_others_topics_brunoais'])){
+						$full_read_access_fids[$forum_id] = $forum_id;
+					}else{
+						$partial_read_access_fids[$forum_id] = $forum_id;
+					}
+				}
+			}
+
+			if(sizeof($partial_read_access_fids) > 0){
+				// The filter has to be in place
+
+				// Workaround for a mistake I made myself when making the event.
+				$sql_sort_join = $event['sql_sort_join'];
+				$sql_sort_join .= ' AND t_brunoais.topic_id = p.topic_id ';
+				$event['sql_sort_join'] = $sql_sort_join;
+
+				$sql_sort_table = $event['sql_sort_table'];
+				$sql_sort_table .= TOPICS_TABLE . ' t_brunoais, ';
+				$event['sql_sort_table'] = $sql_sort_table;
+
+
+				$sql_fora = $event['sql_fora'];
+
+				$sql_fora .= ' AND (' . $this->db->sql_in_set('t_brunoais.forum_id', $full_read_access_fids, false, true) . '
+					OR t_brunoais.topic_poster = ' . (int) $this->user->data['user_id'] . ' )';
+
+				$event['sql_fora'] = $sql_fora;
+
+			}
+
+
+		}else{
+			$permissionResult = $this->permissionEvaluate(array(
+				'topic_id' => $topic_id,
+			));
+
+			if($permissionResult === Accesses::NO_READ_OTHER){
+
+				// Workaround for a mistake I made myself when making the event.
+				$sql_sort_join = $event['sql_sort_join'];
+				$sql_sort_join .= ' AND t_brunoais.topic_id = p.topic_id ';
+				$event['sql_sort_join'] = $sql_sort_join;
+
+				$sql_sort_table = $event['sql_sort_table'];
+				$sql_sort_table .= TOPICS_TABLE . ' t_brunoais, ';
+				$event['sql_sort_table'] = $sql_sort_table;
+
+
+				$sql_fora = $event['sql_fora'];
+
+				$sql_fora .= ' AND t_brunoais.topic_poster = ' . (int) $this->user->data['user_id'];
+
+				$event['sql_fora'] = $sql_fora;
+			}
+		}
+
+	}
+
+
+
+
+
+
+	//
+	// Auxiliary functions
+	//
+
+
+	private function accessFailed(){
+		$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
+		trigger_error('SORRY_AUTH_READ_OTHER');
+	}
+
+	private function getForumIdAndPosterFromTopic(&$info){
+		$sql = 'SELECT forum_id, topic_poster, topic_type
+			FROM ' . $this->topics_table . '
+			WHERE topic_id = ' . (int) $info['topic_id'];
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+
+		$info['forum_id'] = $row['forum_id'];
+		$info['topic_poster'] = $row['topic_poster'];
+		$info['topic_type'] = $row['topic_type'];
+
+		$this->db->sql_freeresult($result);
+	}
+
+	private function getForumIdAndTopicFromPost(&$info){
+		$sql = 'SELECT forum_id, topic_id
+			FROM ' . $this->posts_table . '
+			WHERE post_id = ' . (int) $info['post_id'];
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+
+		$info['forum_id'] = $row['forum_id'];
+		$info['topic_id'] = $row['topic_id'];
+
+		$this->db->sql_freeresult($result);
+	}
+
+	private function getPosterAndTypeFromTopicId(&$info){
+		$sql = 'SELECT topic_poster, topic_type
+			FROM ' . $this->topics_table . '
+			WHERE topic_id = ' . (int) $info['topic_id'];
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+
+		$info['topic_poster'] = $row['topic_poster'];
+		$info['topic_type'] = $row['topic_type'];
+
+		$this->db->sql_freeresult($result);
+	}
+
+	private function permissionEvaluate($info)
+	{
+		if(empty($info['forum_id'])){
+			if(!empty($info['topic_id'])){
+				$this->getForumIdAndPosterFromTopic($info);
+			}else if(!empty($info['post_id'])){
+				$this->getForumIdAndTopicFromPost($info);
+			}
+		}
+
+		if(!$this->auth->acl_get('f_read', $info['forum_id'])){
+			return Accesses::NO_READ;
+		}
+
+
+		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $info['forum_id'])){
+			if($this->user->data['user_id'] == ANONYMOUS){
+				return Accesses::NO_READ_OTHER;
+			}
+
+			if(
+				isset($info['topic_type']) &&
+				(
+					$info['topic_type'] == POST_ANNOUNCE ||
+					$info['topic_type'] == POST_GLOBAL
+				)
+				){
+				return true;
+			}
+
+			if(!isset($info['topic_poster'])){
+				$this->getPosterAndTypeFromTopicId($info);
+			}
+
+			if($info['topic_poster'] != $this->user->data['user_id']){
+				if(!isset($info['topic_type'])){
+					$this->getPosterAndTypeFromTopicId($info);
+				}
+				if(
+					$info['topic_type'] != POST_ANNOUNCE &&
+					$info['topic_type'] != POST_GLOBAL
+					){
+					return Accesses::NO_READ_OTHER;
+				}
+			}
+		}
+
+		return true;
+
+	}
+
+}
+
