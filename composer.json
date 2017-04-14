@@ -20,7 +20,7 @@
 	"extra": {
 		"display-name": "Permission: Read other users' topics",
 		"soft-require": {
-			"phpbb/phpbb": ">=3.1.5,<3.2@dev"
+			"phpbb/phpbb": ">=3.1.5,<3.3@dev"
 		},
 		"version-check": {
 			"host": "www.phpbb.com",
