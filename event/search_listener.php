@@ -24,15 +24,21 @@ class search_listener implements EventSubscriberInterface
 		return array(
 			'core.search_modify_rowset'								=> 'search_modify_rowset',
 
-			'core.search_backend_search_aftered'						=> 'search_backend_search_after',
-
 			'core.search_mysql_keywords_main_query_before'			=> 'search_mysql_keywords_main_query_before',
 			'core.search_native_keywords_count_query_before'		=> 'search_native_keywords_count_query_before',
 			'core.search_postgres_keywords_main_query_before'		=> 'search_postgres_keywords_main_query_before',
 
+			'core.search_mysql_by_keyword_modify_search_key'		=> 'search_mysql_by_keyword_modify_search_key',
+			'core.search_native_by_keyword_modify_search_key'		=> 'search_native_by_keyword_modify_search_key',
+			'core.search_postgres_by_keyword_modify_search_key'		=> 'search_postgres_by_keyword_modify_search_key',
+
 			'core.search_mysql_author_query_before'					=> 'search_mysql_author_query_before',
 			'core.search_native_author_count_query_before'			=> 'search_native_author_count_query_before',
 			'core.search_postgres_author_count_query_before'		=> 'search_postgres_author_count_query_before',
+
+			'core.search_mysql_by_author_modify_search_key'			=> 'search_mysql_by_author_modify_search_key',
+			'core.search_native_by_author_modify_search_key'		=> 'search_native_by_author_modify_search_key',
+			'core.search_postgres_by_author_modify_search_key'		=> 'search_postgres_by_author_modify_search_key',
 
 		);
 	}
@@ -54,6 +60,12 @@ class search_listener implements EventSubscriberInterface
 	/* @var \phpbb\template\template */
 	protected $template;
 
+	/* @var \brunoais\readOthersTopics\shared\permission_evaluation */
+	protected $permission_evaluation;
+	
+	/* @var \brunoais\readOthersTopics\shared\accesses */
+	protected $accesses;
+
 	/* Tables */
 	public $forums_table;
 	public $topics_table;
@@ -66,13 +78,17 @@ class search_listener implements EventSubscriberInterface
 	* @param	\phpbb\user							$user	User object
 	* @param	\phpbb\db\driver\driver_interface	$db		Database object
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\content_visibility $content_visibility, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user, $forums_table, $topics_table, $posts_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\content_visibility $content_visibility, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user,
+	\brunoais\readOthersTopics\shared\accesses $accesses, \brunoais\readOthersTopics\shared\permission_evaluation $permission_evaluation, 
+	$forums_table, $topics_table, $posts_table)
 	{
 		$this->auth = $auth;
 		$this->phpbb_content_visibility = $content_visibility;
 		$this->db = $db;
-		$this->user = $user;
 		$this->template = $template;
+		$this->user = $user;
+		$this->permission_evaluation = $permission_evaluation;
+		$this->accesses = $accesses;
 		$this->forums_table = $forums_table;
 		$this->topics_table = $topics_table;
 		$this->posts_table = $posts_table;
@@ -85,13 +101,14 @@ class search_listener implements EventSubscriberInterface
 		$rowset = $event['rowset'];
 
 		foreach($rowset AS $key => $row){
-			$permissionResult = $this->permissionEvaluate(array(
+			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
 				'forum_id' => $row['forum_id'],
 				'topic_poster' => $row['topic_poster'],
 				'topic_type' => $row['topic_type'],
 			));
 
-			if($permissionResult === Accesses::NO_READ_OTHER){
+			$accesses = $this->accesses;
+			if($permissionResult === $accesses::NO_READ_OTHER){
 				unset($rowset[$key]);
 			}
 
@@ -139,11 +156,12 @@ class search_listener implements EventSubscriberInterface
 
 
 		}else{
-			$permissionResult = $this->permissionEvaluate(array(
+			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === Accesses::NO_READ_OTHER){
+			$accesses = $this->accesses;
+			if($permissionResult === $accesses::NO_READ_OTHER){
 				$event['join_topic'] = true;
 
 				$sql_match_where = $event['sql_match_where'];
@@ -194,11 +212,12 @@ class search_listener implements EventSubscriberInterface
 
 
 		}else{
-			$permissionResult = $this->permissionEvaluate(array(
+			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === Accesses::NO_READ_OTHER){
+			$accesses = $this->accesses;
+			if($permissionResult === $accesses::NO_READ_OTHER){
 				$event['total_results'] = -1;
 				$event['left_join_topics'] = true;
 
@@ -249,11 +268,12 @@ class search_listener implements EventSubscriberInterface
 
 
 		}else{
-			$permissionResult = $this->permissionEvaluate(array(
+			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === Accesses::NO_READ_OTHER){
+			$accesses = $this->accesses;
+			if($permissionResult === $accesses::NO_READ_OTHER){
 				$event['join_topic'] = true;
 
 				$sql_match_where = $event['sql_match_where'];
@@ -264,6 +284,60 @@ class search_listener implements EventSubscriberInterface
 			}
 		}
 	}
+	
+	
+	private function search_cache_check($search_key_array, $topic_id, $excluding_forums){
+		
+		if($topic_id > 0){
+			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
+				'topic_id' => $topic_id,
+			));
+			$accesses = $this->accesses;
+			if($permissionResult === $accesses::NO_READ_OTHER){
+				return array('NoAccessResult'); 
+			}
+		} else {
+			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
+			$ex_fid_keys = array_keys($excluding_forums);
+			$partial_read_access_fids = $full_read_access_fids = array();
+
+			foreach($forums_permissions as $forum_id => $forum_permissions){
+				if(isset($forum_permissions['f_read']) &&
+					!isset($ex_fid_keys[$forum_id])){
+					if(!isset($forum_permissions['f_read_others_topics_brunoais'])){
+						$search_key_array[] = (int) $this->user->data['user_id']; 
+						return $search_key_array;
+					}
+				}
+			}
+		}
+		return $search_key_array;
+	}
+	
+	public function search_mysql_by_keyword_modify_search_key($event){
+		$event['search_key_array'] = $this->search_cache_check($event['search_key_array'], $event['topic_id'], $event['ex_fid_ary']);
+	}
+	
+	public function search_native_by_keyword_modify_search_key($event){
+		$event['search_key_array'] = $this->search_cache_check($event['search_key_array'], $event['topic_id'], $event['ex_fid_ary']);
+	}
+	
+	public function search_postgres_by_keyword_modify_search_key($event){
+		$event['search_key_array'] = $this->search_cache_check($event['search_key_array'], $event['topic_id'], $event['ex_fid_ary']);
+	}
+	
+	public function search_mysql_by_author_modify_search_key($event){
+		$event['search_key_array'] = $this->search_cache_check($event['search_key_array'], $event['topic_id'], $event['ex_fid_ary']);
+	}
+	
+	public function search_native_by_author_modify_search_key($event){
+		$event['search_key_array'] = $this->search_cache_check($event['search_key_array'], $event['topic_id'], $event['ex_fid_ary']);
+	}
+	
+	public function search_postgres_by_author_modify_search_key($event){
+		$event['search_key_array'] = $this->search_cache_check($event['search_key_array'], $event['topic_id'], $event['ex_fid_ary']);
+	}
+	
 
 	public function search_mysql_author_query_before($event){
 
@@ -313,11 +387,12 @@ class search_listener implements EventSubscriberInterface
 
 
 		}else{
-			$permissionResult = $this->permissionEvaluate(array(
+			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === Accesses::NO_READ_OTHER){
+			$accesses = $this->accesses;
+			if($permissionResult === $accesses::NO_READ_OTHER){
 
 				// Workaround for a mistake I made myself when making the event.
 				$sql_sort_join = $event['sql_sort_join'];
@@ -388,11 +463,12 @@ class search_listener implements EventSubscriberInterface
 
 
 		}else{
-			$permissionResult = $this->permissionEvaluate(array(
+			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === Accesses::NO_READ_OTHER){
+			$accesses = $this->accesses;
+			if($permissionResult === $accesses::NO_READ_OTHER){
 
 				// Workaround for a mistake I made myself when making the event.
 				$sql_sort_join = $event['sql_sort_join'];
@@ -464,11 +540,12 @@ class search_listener implements EventSubscriberInterface
 
 
 		}else{
-			$permissionResult = $this->permissionEvaluate(array(
+			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === Accesses::NO_READ_OTHER){
+			$accesses = $this->accesses;
+			if($permissionResult === $accesses::NO_READ_OTHER){
 
 				// Workaround for a mistake I made myself when making the event.
 				$sql_sort_join = $event['sql_sort_join'];
@@ -489,253 +566,5 @@ class search_listener implements EventSubscriberInterface
 		}
 
 	}
-
-
-	public function search_backend_search_aftered($event){
-		
-		$not_searched_fids = $event['ex_fid_ary'];
-		$search_kind = $event['search_kind'];
-		
-		if($search_kind != 'keyword_search' && $search_kind != 'author_search'){
-			// SHOULD NOT HAPPEN!!!
-			throw new \Exception('Unexpected $search_kind found: ' . $search_kind);
-		}
-		
-		$unset_total = 0;
-		
-		$not_searched_fids = $event['ex_fid_ary'];
-		
-		$topic_id = $event['topic_id'];
-		
-		if(!empty($topic_id)){
-			$permission_result = $this->permissionEvaluate(array(
-				'topic_id' => $topic_id,
-			));
-			if($permission_result === Accesses::NO_READ_OTHER){
-				trigger_error('SORRY_AUTH_READ_OTHER');
-			}
-			// All OK
-			return;
-		}
-		
-		$not_searched_fids = $event['ex_fid_ary'];
-		
-		var_dump($not_searched_fids);
-		
-		$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
-
-		$partial_read_access_fids = $full_read_access_fids = array();
-
-		foreach($forums_permissions as $forum_id => $forum_permissions){
-
-			if(isset($forum_permissions['f_read']) &&
-				!isset($not_searched_fids[$forum_id])){
-				if(isset($forum_permissions['f_read_others_topics_brunoais'])){
-					$full_read_access_fids[$forum_id] = $forum_id;
-				}else{
-					$partial_read_access_fids[$forum_id] = $forum_id;
-				}
-			}
-		}
-		
-		if(count($partial_read_access_fids) === 0){
-			// No filter required
-			return;
-		}
-		
-		
-		$test_post_ids = $event['id_ary'];
-		$approved_post_ids = $test_post_ids;
-		
-		foreach($test_post_id AS $key => $test_post_ids){
-			$permissionResult = $this->permissionEvaluate(array(
-				'post_id' => $test_post_id,
-			));
-			if($permissionResult !== true){
-				unset($approved_post_ids[$key]);
-				$unset_total++;
-			}
-		}
-		
-		$start = $event['start'];
-		$per_page = $event['per_page'];
-		
-		while(count($approved_post_ids) < count($test_post_ids)){
-			// Oh well... Time to try gathering more posts... somehow...
-			
-			// Next page to fill up the missing parts
-			
-			$start += $per_page;
-			
-			$search = $event['search'];
-			$search_kind = $event['search_kind'];
-			
-			if ($search_kind == 'keyword_search'){
-				$total_match_count = $search->keyword_search(
-					$event['show_results'],
-					$event['search_fields'],
-					$event['search_terms'],
-					$event['sort_by_sql'],
-					$event['sort_key'],
-					$event['sort_dir'],
-					$event['sort_days'],
-					$event['ex_fid_ary'],
-					$event['m_approve_posts_fid_sql'],
-					$event['topic_id'],
-					$event['author_id_ary'],
-					$event['sql_author_match'],
-					$results,
-					$start,
-					$per_page
-				);
-			} else {
-				$firstpost_only = ($search_fields === 'firstpost' || $search_fields == 'titleonly') ? true : false;
-				$total_match_count = $search->author_search(
-					$event['show_results'],
-					$event['search_fields'] == 'firstpost' || $event['search_fields'] == 'titleonly',
-					$event['sort_by_sql'],
-					$event['sort_key'],
-					$event['sort_dir'],
-					$event['sort_days'],
-					$event['ex_fid_ary'],
-					$event['m_approve_posts_fid_sql'],
-					$event['topic_id'],
-					$event['author_id_ary'],
-					$event['sql_author_match'],
-					$results,
-					$start,
-					$per_page
-				);
-			}
-			
-			if(count($results) === 0){
-				// No more results... Oh well, this is all I got
-				break;
-			}
-			
-			foreach($results AS $key => $result){
-				$permissionResult = $this->permissionEvaluate(array(
-					'post_id' => $result,
-				));
-				if($permissionResult === true){
-					$approved_post_ids[] = $result;
-				} else {
-					$unset_total++;
-				}
-			}
-			
-		}
-		
-		// This does NOT work properly. It is better than nothing but... Just some searching work with this and...
-		// truth is found with ease...
-		$event['total_match_count'] = $event['total_match_count'] - $unset_total;
-		
-	}
-
-
-
-
-
-	//
-	// Auxiliary functions
-	//
-
-
-	private function accessFailed(){
-		$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
-		trigger_error('SORRY_AUTH_READ_OTHER');
-	}
-
-	private function getForumIdAndPosterFromTopic(&$info){
-		$sql = 'SELECT forum_id, topic_poster, topic_type
-			FROM ' . $this->topics_table . '
-			WHERE topic_id = ' . (int) $info['topic_id'];
-		$result = $this->db->sql_query($sql);
-		$row = $this->db->sql_fetchrow($result);
-
-		$info['forum_id'] = $row['forum_id'];
-		$info['topic_poster'] = $row['topic_poster'];
-		$info['topic_type'] = $row['topic_type'];
-
-		$this->db->sql_freeresult($result);
-	}
-
-	private function getForumIdAndTopicFromPost(&$info){
-		$sql = 'SELECT forum_id, topic_id
-			FROM ' . $this->posts_table . '
-			WHERE post_id = ' . (int) $info['post_id'];
-		$result = $this->db->sql_query($sql);
-		$row = $this->db->sql_fetchrow($result);
-
-		$info['forum_id'] = $row['forum_id'];
-		$info['topic_id'] = $row['topic_id'];
-
-		$this->db->sql_freeresult($result);
-	}
-
-	private function getPosterAndTypeFromTopicId(&$info){
-		$sql = 'SELECT topic_poster, topic_type
-			FROM ' . $this->topics_table . '
-			WHERE topic_id = ' . (int) $info['topic_id'];
-		$result = $this->db->sql_query($sql);
-		$row = $this->db->sql_fetchrow($result);
-
-		$info['topic_poster'] = $row['topic_poster'];
-		$info['topic_type'] = $row['topic_type'];
-
-		$this->db->sql_freeresult($result);
-	}
-
-	private function permissionEvaluate($info)
-	{
-		if(empty($info['forum_id'])){
-			if(!empty($info['topic_id'])){
-				$this->getForumIdAndPosterFromTopic($info);
-			}else if(!empty($info['post_id'])){
-				$this->getForumIdAndTopicFromPost($info);
-			}
-		}
-
-		if(!$this->auth->acl_get('f_read', $info['forum_id'])){
-			return Accesses::NO_READ;
-		}
-
-
-		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $info['forum_id'])){
-			if($this->user->data['user_id'] == ANONYMOUS){
-				return Accesses::NO_READ_OTHER;
-			}
-
-			if(
-				isset($info['topic_type']) &&
-				(
-					$info['topic_type'] == POST_ANNOUNCE ||
-					$info['topic_type'] == POST_GLOBAL
-				)
-				){
-				return true;
-			}
-
-			if(!isset($info['topic_poster'])){
-				$this->getPosterAndTypeFromTopicId($info);
-			}
-
-			if($info['topic_poster'] != $this->user->data['user_id']){
-				if(!isset($info['topic_type'])){
-					$this->getPosterAndTypeFromTopicId($info);
-				}
-				if(
-					$info['topic_type'] != POST_ANNOUNCE &&
-					$info['topic_type'] != POST_GLOBAL
-					){
-					return Accesses::NO_READ_OTHER;
-				}
-			}
-		}
-
-		return true;
-
-	}
-
 }
 

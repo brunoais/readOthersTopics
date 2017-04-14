@@ -1,4 +1,18 @@
 services:
+    brunoais.readOthersTopics.shared.permission_evaluation:
+        class: brunoais\readOthersTopics\shared\permission_evaluation
+        arguments:
+            - @auth
+            - @content.visibility
+            - @dbal.conn
+            - @template
+            - @user
+            - @brunoais.readOthersTopics.shared.accesses
+            - %tables.forums%
+            - %tables.topics%
+            - %tables.posts%
+    brunoais.readOthersTopics.shared.accesses:
+        class: brunoais\readOthersTopics\shared\accesses
     brunoais.readOthersTopics.event.main_listener:
         class: brunoais\readOthersTopics\event\main_listener
         arguments:
@@ -7,6 +21,8 @@ services:
             - @dbal.conn
             - @template
             - @user
+            - @brunoais.readOthersTopics.shared.accesses
+            - @brunoais.readOthersTopics.shared.permission_evaluation
             - %tables.forums%
             - %tables.topics%
             - %tables.posts%
@@ -20,6 +36,8 @@ services:
             - @dbal.conn
             - @template
             - @user
+            - @brunoais.readOthersTopics.shared.accesses
+            - @brunoais.readOthersTopics.shared.permission_evaluation
             - %tables.forums%
             - %tables.topics%
             - %tables.posts%
@@ -33,6 +51,8 @@ services:
             - @dbal.conn
             - @template
             - @user
+            - @brunoais.readOthersTopics.shared.accesses
+            - @brunoais.readOthersTopics.shared.permission_evaluation
             - %tables.forums%
             - %tables.topics%
             - %tables.posts%

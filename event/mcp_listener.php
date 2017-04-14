@@ -50,6 +50,13 @@ class mcp_listener implements EventSubscriberInterface
 	/* @var \phpbb\template\template */
 	protected $template;
 
+	/* @var \brunoais\readOthersTopics\shared\permission_evaluation */
+	protected $permission_evaluation;
+	
+	/* @var \brunoais\readOthersTopics\shared\accesses */
+	protected $accesses;
+	
+	
 	/* Tables */
 	public $forums_table;
 	public $topics_table;
@@ -62,13 +69,17 @@ class mcp_listener implements EventSubscriberInterface
 	* @param	\phpbb\user							$user	User object
 	* @param	\phpbb\db\driver\driver_interface	$db		Database object
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\content_visibility $content_visibility, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user, $forums_table, $topics_table, $posts_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\content_visibility $content_visibility, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user,
+	\brunoais\readOthersTopics\shared\accesses $accesses, \brunoais\readOthersTopics\shared\permission_evaluation $permission_evaluation, 
+	$forums_table, $topics_table, $posts_table)
 	{
 		$this->auth = $auth;
 		$this->phpbb_content_visibility = $content_visibility;
 		$this->db = $db;
-		$this->user = $user;
 		$this->template = $template;
+		$this->user = $user;
+		$this->permission_evaluation = $permission_evaluation;
+		$this->accesses = $accesses;
 		$this->forums_table = $forums_table;
 		$this->topics_table = $topics_table;
 		$this->posts_table = $posts_table;
@@ -78,12 +89,13 @@ class mcp_listener implements EventSubscriberInterface
 
 	public function phpbb_mcp_global_f_read_auth_after($event){
 		if($event['forum_id'] && $event['topic_id']){
-			$permissionResult = $this->permissionEvaluate(array(
+			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
 				'forum_id' => $event['forum_id'],
 				'topic_id' => $event['topic_id'],
 			));
 
-			if($permissionResult === Accesses::NO_READ_OTHER){
+			$accesses = $this->accesses;
+			if($permissionResult === $accesses::NO_READ_OTHER){
 				trigger_error('NOT_AUTHORISED');
 			}
 		}
@@ -270,108 +282,5 @@ class mcp_listener implements EventSubscriberInterface
 		$event['sql_ary'] = $sql_ary;
 
 	}
-
-
-	//
-	// Auxiliary functions
-	//
-
-
-	private function accessFailed(){
-		$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
-		trigger_error('SORRY_AUTH_READ_OTHER');
-	}
-
-	private function getForumIdAndPosterFromTopic(&$info){
-		$sql = 'SELECT forum_id, topic_poster, topic_type
-			FROM ' . $this->topics_table . '
-			WHERE topic_id = ' . (int) $info['topic_id'];
-		$result = $this->db->sql_query($sql);
-		$row = $this->db->sql_fetchrow($result);
-
-		$info['forum_id'] = $row['forum_id'];
-		$info['topic_poster'] = $row['topic_poster'];
-		$info['topic_type'] = $row['topic_type'];
-
-		$this->db->sql_freeresult($result);
-	}
-
-	private function getForumIdAndTopicFromPost(&$info){
-		$sql = 'SELECT forum_id, topic_id
-			FROM ' . $this->posts_table . '
-			WHERE post_id = ' . (int) $info['post_id'];
-		$result = $this->db->sql_query($sql);
-		$row = $this->db->sql_fetchrow($result);
-
-		$info['forum_id'] = $row['forum_id'];
-		$info['topic_id'] = $row['topic_id'];
-
-		$this->db->sql_freeresult($result);
-	}
-
-	private function getPosterAndTypeFromTopicId(&$info){
-		$sql = 'SELECT topic_poster, topic_type
-			FROM ' . $this->topics_table . '
-			WHERE topic_id = ' . (int) $info['topic_id'];
-		$result = $this->db->sql_query($sql);
-		$row = $this->db->sql_fetchrow($result);
-
-		$info['topic_poster'] = $row['topic_poster'];
-		$info['topic_type'] = $row['topic_type'];
-
-		$this->db->sql_freeresult($result);
-	}
-
-	private function permissionEvaluate($info)
-	{
-		if(empty($info['forum_id'])){
-			if(!empty($info['topic_id'])){
-				$this->getForumIdAndPosterFromTopic($info);
-			}else if(!empty($info['post_id'])){
-				$this->getForumIdAndTopicFromPost($info);
-			}
-		}
-
-		if(!$this->auth->acl_get('f_read', $info['forum_id'])){
-			return Accesses::NO_READ;
-		}
-
-
-		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $info['forum_id'])){
-			if($this->user->data['user_id'] == ANONYMOUS){
-				return Accesses::NO_READ_OTHER;
-			}
-
-			if(
-				isset($info['topic_type']) &&
-				(
-					$info['topic_type'] == POST_ANNOUNCE ||
-					$info['topic_type'] == POST_GLOBAL
-				)
-				){
-				return true;
-			}
-
-			if(!isset($info['topic_poster'])){
-				$this->getPosterAndTypeFromTopicId($info);
-			}
-
-			if($info['topic_poster'] != $this->user->data['user_id']){
-				if(!isset($info['topic_type'])){
-					$this->getPosterAndTypeFromTopicId($info);
-				}
-				if(
-					$info['topic_type'] != POST_ANNOUNCE &&
-					$info['topic_type'] != POST_GLOBAL
-					){
-					return Accesses::NO_READ_OTHER;
-				}
-			}
-		}
-
-		return true;
-
-	}
-
 }
 
