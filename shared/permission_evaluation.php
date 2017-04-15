@@ -123,7 +123,7 @@ class permission_evaluation
 
 	}
 	
-	private function accessFailed(){
+	public function accessFailed(){
 		$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
 		trigger_error('SORRY_AUTH_READ_OTHER');
 	}

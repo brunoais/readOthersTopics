@@ -362,7 +362,7 @@ class main_listener implements EventSubscriberInterface
 
 		$accesses = $this->accesses;
 		if($permissionResult === $accesses::NO_READ_OTHER){
-			$this->accessFailed();
+			$this->permission_evaluation->accessFailed();
 		}
 
 		// If all checkout, I already did the f_read check and it passed, no need to do it again.
