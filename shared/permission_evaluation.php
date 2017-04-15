@@ -61,6 +61,17 @@ class permission_evaluation
 		$this->infoStorage = array();
 	}
 	
+	/**
+	 * Returns whether the user has:
+	 * - Full read access: accesses::FULL_READ
+	 * - Can only read own topics: accesses::NO_READ_OTHER
+	 * - No read access: accesses::NO_READ
+	 *
+	 * from the input; an associative array with all info you can give of:
+	 * forum_id, topic_id, post_id, topic_type, topic_poster
+	 *
+	 * Any missing info is automatically checked with a database search
+	 */
 	public function permissionEvaluate($info)
 	{
 		if(empty($info['forum_id'])){
@@ -108,7 +119,7 @@ class permission_evaluation
 			}
 		}
 
-		return true;
+		return accesses::FULL_READ;
 
 	}
 	
@@ -119,8 +130,8 @@ class permission_evaluation
 
 	private function getForumIdAndPosterFromTopic(&$info){
 		$sql = 'SELECT forum_id, topic_poster, topic_type
-			FROM ' . $this->topics_table . '
-			WHERE topic_id = ' . (int) $info['topic_id'];
+				FROM ' . $this->topics_table . '
+				WHERE topic_id = ' . (int) $info['topic_id'];
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 
@@ -133,8 +144,8 @@ class permission_evaluation
 
 	private function getForumIdAndTopicFromPost(&$info){
 		$sql = 'SELECT forum_id, topic_id
-			FROM ' . $this->posts_table . '
-			WHERE post_id = ' . (int) $info['post_id'];
+				FROM ' . $this->posts_table . '
+				WHERE post_id = ' . (int) $info['post_id'];
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 
@@ -146,8 +157,8 @@ class permission_evaluation
 
 	private function getPosterAndTypeFromTopicId(&$info){
 		$sql = 'SELECT topic_poster, topic_type
-			FROM ' . $this->topics_table . '
-			WHERE topic_id = ' . (int) $info['topic_id'];
+				FROM ' . $this->topics_table . '
+				WHERE topic_id = ' . (int) $info['topic_id'];
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 

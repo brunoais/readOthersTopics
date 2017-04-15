@@ -129,7 +129,7 @@ class search_listener implements EventSubscriberInterface
 			foreach($forums_permissions as $forum_id => $forum_permissions){
 
 				if(isset($forum_permissions['f_read']) &&
-					!isset($ex_fid_keys[$forum_id])){
+						!isset($ex_fid_keys[$forum_id])){
 					if(isset($forum_permissions['f_read_others_topics_brunoais'])){
 						$full_read_access_fids[$forum_id] = $forum_id;
 					}else{
