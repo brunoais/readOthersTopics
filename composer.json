@@ -15,7 +15,8 @@
 		}
 	],
 	"require": {
-		"php": ">=5.4.0"
+		"php": ">=5.4.0",
+		"phpbb/phpbb": ">=3.1.5"
 	},
 	"extra": {
 		"display-name": "Permission: Read other users' topics",
