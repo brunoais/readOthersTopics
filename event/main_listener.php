@@ -164,7 +164,8 @@ class main_listener implements EventSubscriberInterface
 				$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
 					'topic_id' => $event['topic_id'],
 				));
-				if($permissionResult === true){
+				$accesses = $this->accesses;
+				if($permissionResult === $accesses::FULL_READ){
 					return;
 				}
 			}else if (is_array($event['forum_id'])){
