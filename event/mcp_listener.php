@@ -224,6 +224,8 @@ class mcp_listener implements EventSubscriberInterface
 				$this->db->sql_freeresult($result);
 
 				$event['post_list'] = $post_list;
+				$event['total'] = count($post_list);
+				
 		}
 	}
 
