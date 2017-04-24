@@ -209,7 +209,7 @@ class mcp_listener implements EventSubscriberInterface
 					INNER JOIN ' . $this->topics_table . ' AS t ON
 						p.topic_id = t.topic_id
 					WHERE
-						' . $this->db->sql_in_set('p.forum_id', $event['forum_list'], true) . '
+						' . $this->db->sql_in_set('p.forum_id', $event['forum_list'], false, true) . '
 						AND (' . $this->db->sql_in_set('p.forum_id', $fullAccessForumIDs, false, true) . '
 							OR t.topic_poster = ' . (int) $this->user->data['user_id'] . '
 						)
