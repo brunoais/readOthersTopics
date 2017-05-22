@@ -26,9 +26,7 @@ class initial_release extends \phpbb\db\migration\migration
 			array('permission.role_add', array(self::ROLE_NAME, 'f_', self::ROLE_DESCRIPTION_NAME)),
 			array('permission.add', array(self::PERMISSION_NAME, false, false)),
 			
-			// Setup correct position for the new role
-			array('custom', array(array($this, 'make_place_for_new_role'))),
-			array('custom', array(array($this, 'move_new_role_to_after_standard_permissions'))),
+			// The new role is supposed to behave just like the standard_access role
 			array('custom', array(array($this, 'copy_permissions_from_standard_access'))),
 			
 			// Setup default value as "yes" for roles that have the "can read" permission
@@ -46,68 +44,6 @@ class initial_release extends \phpbb\db\migration\migration
 		);
 	}
 
-	public function make_place_for_new_role()
-	{
-		
-		// Check if space already exists
-		$sql = "
-			SELECT count(*) AS how_many
-			FROM " . $this->table_prefix . "acl_roles
-			WHERE role_order = 1 + (
-				SELECT role_order
-				FROM " . $this->table_prefix . "acl_roles
-				WHERE role_name = '" . self::PARENT_NATIVE_ROLE_NAME . "'
-			)
-			AND
-			role_type = 'f_'";
-		
-		$result = $this->db->sql_query($sql);
-		$row = $this->db->sql_fetchrow($result);
-		if($row['how_many'] > 0){
-			// Space doesn't exist, move all other roles for "f_" after self::PARENT_NATIVE_ROLE_NAME 1 value below
-			$sql = 
-			"UPDATE " . $this->table_prefix . "acl_roles
-			SET role_order = role_order + 1
-			WHERE 
-				(role_order > 
-					(
-						SELECT role_order
-						FROM (
-							SELECT role_order
-								FROM " . $this->table_prefix . "acl_roles
-								WHERE role_name = '" . self::PARENT_NATIVE_ROLE_NAME . "'
-						) AS original
-						WHERE 1
-					)
-				) AND (
-				role_type = 'f_'
-				)
-			";
-			$result = $this->db->sql_query($sql);
-			$this->db->sql_freeresult($result);
-		}
-	}
-
-	public function move_new_role_to_after_standard_permissions()
-	{
-		// Move my new role to under self::PARENT_NATIVE_ROLE_NAME
-		$sql = "
-		UPDATE " . $this->table_prefix . "acl_roles
-		SET role_order = (
-			SELECT role_order +1
-				FROM (
-					SELECT role_order
-						FROM " . $this->table_prefix . "acl_roles
-						WHERE role_name = '" . self::PARENT_NATIVE_ROLE_NAME . "'
-					 ) AS source_val
-				WHERE 1
-			)
-		WHERE role_name = '". self::ROLE_NAME . "'
-		";
-		
-		$result = $this->db->sql_query($sql);
-		$this->db->sql_freeresult($result);
-	}
 
 	public function copy_permissions_from_standard_access()
 	{
