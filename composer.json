@@ -19,7 +19,7 @@
 		"phpbb/phpbb": ">=3.1.5"
 	},
 	"extra": {
-		"display-name": "Permission: Read other users' topics",
+		"display-name": "Read other's topics Permission",
 		"soft-require": {
 			"phpbb/phpbb": ">=3.1.7,<3.3@dev"
 		},
