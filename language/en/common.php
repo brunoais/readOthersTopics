@@ -30,5 +30,5 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'SORRY_AUTH_READ_OTHER'			=> 'You are not authorised to read this topic.',
-	
+	'SORRY_CLASSIFIED_INFORMATION'	=> 'Classified information',
 ));

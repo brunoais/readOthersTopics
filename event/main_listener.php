@@ -182,7 +182,7 @@ class main_listener implements EventSubscriberInterface
 					return;
 				}
 			}else if ($event['forum_id']){
-				if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+				if($this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id'])){
 					return;
 				}
 			}else{
@@ -327,24 +327,18 @@ class main_listener implements EventSubscriberInterface
 	public function phpbb_display_forums_modify_template_vars($event){
 
 		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_row']['FORUM_ID'])){
+			$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
+			
 			$forum_row = $event['forum_row'];
 			$forum_row['TOPICS'] = '-';
 			$forum_row['POSTS'] = '-';
 			$forum_row['LAST_POSTER_FULL'] = '-';
 			$forum_row['U_LAST_POST'] = '#';
 			// $forum_row['S_DISPLAY_SUBJECT'] = false;
-			$forum_row['LAST_POST_SUBJECT'] = '*Classified information*';
-			$forum_row['LAST_POST_SUBJECT_TRUNCATED'] = '*Classified information*';
-			// $forum_row['LAST_POST_TIME'] = '';
-			$forum_row['LAST_POST_TIME'] = '&nbsp;
-<script>
-	var script = document.currentScript || (function() {
-		var scripts = document.getElementsByTagName("script");
-		return scripts[scripts.length - 1];
-	})();
-	script.parentNode.parentNode.innerHTML = "<span>Classified information</span>";
-</script>
-';
+			$forum_row['LAST_POST_SUBJECT'] = '*' . $this->user->lang('SORRY_CLASSIFIED_INFORMATION') . '*';
+			$forum_row['LAST_POST_SUBJECT_TRUNCATED'] = '*' . $this->user->lang('SORRY_CLASSIFIED_INFORMATION') . '*';
+			$forum_row['LAST_POST_TIME'] = '-';
+			$forum_row['S_IS_CLASSIFIED'] = true;
 			$event['forum_row'] = $forum_row;
 		}
 
