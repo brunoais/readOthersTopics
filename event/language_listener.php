@@ -26,7 +26,7 @@ class language_listener implements EventSubscriberInterface
 		);
 	}
 	
-	public static function insertInAssocArray($original, $searchingKey, $newThingKey, $newThing){
+	public static function insertAtInAssocArray($original, $searchingKey, $newThingKey, $newThing){
 		
 		$rebuild = array();
 		
@@ -52,7 +52,7 @@ class language_listener implements EventSubscriberInterface
 	public function adapt_permission_logic($event)
 	{
 		
-		$event['permissions'] = self::insertInAssocArray($event['permissions'],
+		$event['permissions'] = self::insertAtInAssocArray($event['permissions'],
 				\brunoais\readOthersTopics\migrations\initial_release::PARENT_PERMISSION_NAME,
 				\brunoais\readOthersTopics\migrations\initial_release::PERMISSION_NAME,
 				array(
