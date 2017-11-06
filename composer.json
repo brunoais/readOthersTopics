@@ -20,6 +20,9 @@
 	},
 	"extra": {
 		"display-name": "Read other's topics Permission",
+        "soft-require": {
+           "phpbb/phpbb": ">=3.1.7"
+        },
 		"version-check": {
 			"host": "www.phpbb.com",
 			"directory": "/customise/db/extension/readOthersTopics",
