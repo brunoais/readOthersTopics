@@ -3,7 +3,7 @@
 	"type": "phpbb-extension",
 	"description": "An extension which allows you to restrict topic viewing to who made the first post and who has this permission",
 	"homepage": "https://github.com/brunoais/",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"keywords": ["phpbb", "extension", "permission", "topic"],
 	"license": "GPL-2.0",
 	"authors": [
