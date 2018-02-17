@@ -103,11 +103,17 @@ class permission_evaluation
 			}
 
 			if(!isset($info['topic_poster'])){
+				if(!isset($info['topic_id'])){
+					$this->getForumIdAndTopicFromPost($info);
+				}
 				$this->getPosterAndTypeFromTopicId($info);
 			}
 
 			if($info['topic_poster'] != $this->user->data['user_id']){
 				if(!isset($info['topic_type'])){
+					if(!isset($info['topic_id'])){
+						$this->getForumIdAndTopicFromPost($info);
+					}
 					$this->getPosterAndTypeFromTopicId($info);
 				}
 				if(
