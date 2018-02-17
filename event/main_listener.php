@@ -181,7 +181,7 @@ class main_listener implements EventSubscriberInterface
 					// Nothing to filter
 					return;
 				}
-			}else if ($event['forum_id']){
+			}else if (!empty($event['forum_id'])){
 				if($this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id'])){
 					return;
 				}
