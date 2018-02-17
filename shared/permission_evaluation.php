@@ -99,7 +99,7 @@ class permission_evaluation
 					$info['topic_type'] == POST_GLOBAL
 				)
 				){
-				return true;
+				return accesses::FULL_READ;
 			}
 
 			if(!isset($info['topic_poster'])){
