@@ -330,8 +330,9 @@ class main_listener implements EventSubscriberInterface
 			'forum_id' => $event['row']['forum_id_last_post'],
 			'post_id' => $event['row']['forum_last_post_id'],
 		));
-		
-		if($post_access !== $this->accesses::FULL_READ){
+		// php 5.6 compatibility
+		$accesses = $this->accesses;
+		if($post_access !== $accesses::FULL_READ){
 			$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
 			$forum_row = $event['forum_row'];
 			$forum_row['LAST_POSTER_FULL'] = '-';
