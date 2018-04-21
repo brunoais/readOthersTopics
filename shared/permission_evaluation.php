@@ -66,17 +66,17 @@ class permission_evaluation
 	 *
 	 * Any missing info is automatically checked with a database search
 	 */
-	public function permissionEvaluate($info)
+	public function permission_evaluate($info)
 	{
 		if(empty($info['forum_id']))
 		{
 			if(!empty($info['topic_id']))
 			{
-				$this->getForumIdAndPosterFromTopic($info);
+				$this->get_forum_id_and_poster_from_topic($info);
 			}
 			else if(!empty($info['post_id']))
 			{
-				$this->getForumIdAndTopicFromPost($info);
+				$this->get_forum_id_and_poster_from_post($info);
 			}
 		}
 
@@ -108,9 +108,9 @@ class permission_evaluation
 			{
 				if(!isset($info['topic_id']))
 				{
-					$this->getForumIdAndTopicFromPost($info);
+					$this->get_forum_id_and_poster_from_post($info);
 				}
-				$this->getPosterAndTypeFromTopicId($info);
+				$this->get_poster_and_type_from_topic_id($info);
 			}
 
 			if($info['topic_poster'] != $this->user->data['user_id'])
@@ -119,9 +119,9 @@ class permission_evaluation
 				{
 					if(!isset($info['topic_id']))
 					{
-						$this->getForumIdAndTopicFromPost($info);
+						$this->get_forum_id_and_poster_from_post($info);
 					}
-					$this->getPosterAndTypeFromTopicId($info);
+					$this->get_poster_and_type_from_topic_id($info);
 				}
 				if(
 					$info['topic_type'] != POST_ANNOUNCE &&
@@ -137,13 +137,13 @@ class permission_evaluation
 
 	}
 	
-	public function accessFailed()
+	public function access_failed()
 	{
 		$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
 		trigger_error('SORRY_AUTH_READ_OTHER');
 	}
 
-	private function getForumIdAndPosterFromTopic(&$info)
+	private function get_forum_id_and_poster_from_topic(&$info)
 	{
 		$sql = 'SELECT forum_id, topic_poster, topic_type
 				FROM ' . $this->topics_table . '
@@ -158,7 +158,7 @@ class permission_evaluation
 		$this->db->sql_freeresult($result);
 	}
 
-	private function getForumIdAndTopicFromPost(&$info)
+	private function get_forum_id_and_poster_from_post(&$info)
 	{
 		$sql = 'SELECT forum_id, topic_id
 				FROM ' . $this->posts_table . '
@@ -172,7 +172,7 @@ class permission_evaluation
 		$this->db->sql_freeresult($result);
 	}
 
-	private function getPosterAndTypeFromTopicId(&$info)
+	private function get_poster_and_type_from_topic_id(&$info)
 	{
 		$sql = 'SELECT topic_poster, topic_type
 				FROM ' . $this->topics_table . '

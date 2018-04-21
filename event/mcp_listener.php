@@ -85,12 +85,12 @@ class mcp_listener implements EventSubscriberInterface
 	{
 		if($event['forum_id'] && $event['topic_id'])
 		{
-			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
+			$permission_result = $this->permission_evaluation->permission_evaluate(array(
 				'forum_id' => $event['forum_id'],
 				'topic_id' => $event['topic_id'],
 			));
 
-			if($permissionResult === accesses::NO_READ_OTHER)
+			if($permission_result === accesses::NO_READ_OTHER)
 			{
 				trigger_error('NOT_AUTHORISED');
 			}
@@ -101,16 +101,16 @@ class mcp_listener implements EventSubscriberInterface
 	{
 
 		$forum_ids = $event['forum_list'];
-		$fullAccessForumIDs = array();
+		$full_access_forum_IDs = array();
 		foreach($forum_ids AS $forum_id)
 		{
 			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
 			{
-					$fullAccessForumIDs[] = $forum_id;
+					$full_access_forum_IDs[] = $forum_id;
 			}
 		}
 
-		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids))
+		if(sizeof($full_access_forum_IDs) === sizeof($forum_ids))
 		{
 			// Nothing to filter
 			return;
@@ -119,7 +119,7 @@ class mcp_listener implements EventSubscriberInterface
 		$event['sql'] =
 		preg_replace(
 				'%ORDER BY ' . preg_quote($event['sort_order_sql'], '%') . '%',
-			' AND (' . $this->db->sql_in_set('t.forum_id', $fullAccessForumIDs, false, true) . '
+			' AND (' . $this->db->sql_in_set('t.forum_id', $full_access_forum_IDs, false, true) . '
 			OR t.topic_poster = ' . (int) $this->user->data['user_id'] . ' )
 			ORDER BY ' . $event['sort_order_sql'] ,
 			$event['sql'],
@@ -130,14 +130,14 @@ class mcp_listener implements EventSubscriberInterface
 
 	public function phpbb_mcp_sorting_query_before($event)
 	{
-			$fullAccessForumIDs = ($event['forum_id']) ? array($event['forum_id']) : array_intersect(get_forum_list('f_read_others_topics_brunoais'), get_forum_list('m_approve'));
+			$full_access_forum_IDs = ($event['forum_id']) ? array($event['forum_id']) : array_intersect(get_forum_list('f_read_others_topics_brunoais'), get_forum_list('m_approve'));
 
 			switch($event['mode'])
 			{
 
 				case 'forum_view':
 
-					$event['sql'] .= ' AND (' . $this->db->sql_in_set('forum_id', $fullAccessForumIDs, false, true) . '
+					$event['sql'] .= ' AND (' . $this->db->sql_in_set('forum_id', $full_access_forum_IDs, false, true) . '
 					OR topic_poster = ' . (int) $this->user->data['user_id'] . ' ) ';
 
 				break;
@@ -154,16 +154,16 @@ class mcp_listener implements EventSubscriberInterface
 	{
 
 		$forum_ids = $event['forum_list'];
-		$fullAccessForumIDs = array();
+		$full_access_forum_IDs = array();
 		foreach($forum_ids AS $forum_id)
 		{
 			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
 			{
-					$fullAccessForumIDs[] = $forum_id;
+					$full_access_forum_IDs[] = $forum_id;
 			}
 		}
 
-		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids))
+		if(sizeof($full_access_forum_IDs) === sizeof($forum_ids))
 		{
 			// Nothing to filter
 			return;
@@ -179,15 +179,15 @@ class mcp_listener implements EventSubscriberInterface
 			$where_sql = 't.topic_id = p.topic_id
 			AND '. $where_sql;
 		}
-		$where_sql = '(' . $this->db->sql_in_set('t.forum_id', $fullAccessForumIDs, false, true) . '
+		$where_sql = '(' . $this->db->sql_in_set('t.forum_id', $full_access_forum_IDs, false, true) . '
 		OR t.topic_poster = ' . (int) $this->user->data['user_id'] . ' ) AND '
 		. $where_sql;
 
 
-		$varHold = $event['sql_ary'];
-		$varHold['FROM'] = $from_sql;
-		$varHold['WHERE'] = $where_sql;
-		$event['sql_ary'] = $varHold;
+		$var_hold = $event['sql_ary'];
+		$var_hold['FROM'] = $from_sql;
+		$var_hold['WHERE'] = $where_sql;
+		$event['sql_ary'] = $var_hold;
 
 	}
 
@@ -197,16 +197,16 @@ class mcp_listener implements EventSubscriberInterface
 		if($event['total'] > 0)
 		{
 			$forum_ids = $event['forum_list'];
-			$fullAccessForumIDs = array();
+			$full_access_forum_IDs = array();
 			foreach($forum_ids AS $forum_id)
 			{
 				if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
 				{
-					$fullAccessForumIDs[] = $forum_id;
+					$full_access_forum_IDs[] = $forum_id;
 				}
 			}
 
-			if(sizeof($fullAccessForumIDs) === sizeof($forum_ids))
+			if(sizeof($full_access_forum_IDs) === sizeof($forum_ids))
 			{
 				// Nothing to filter
 				return;
@@ -223,7 +223,7 @@ class mcp_listener implements EventSubscriberInterface
 						p.topic_id = t.topic_id
 					WHERE
 						' . $this->db->sql_in_set('p.forum_id', $event['forum_list'], false, true) . '
-						AND (' . $this->db->sql_in_set('p.forum_id', $fullAccessForumIDs, false, true) . '
+						AND (' . $this->db->sql_in_set('p.forum_id', $full_access_forum_IDs, false, true) . '
 							OR t.topic_poster = ' . (int) $this->user->data['user_id'] . '
 						)
 						AND ' . $this->db->sql_in_set('post_visibility', array(ITEM_UNAPPROVED, ITEM_REAPPROVE)) . '
@@ -244,16 +244,16 @@ class mcp_listener implements EventSubscriberInterface
 	public function phpbb_mcp_front_reports_count_query_before($event)
 	{
 		$forum_ids = $event['forum_list'];
-		$fullAccessForumIDs = array();
+		$full_access_forum_IDs = array();
 		foreach($forum_ids AS $forum_id)
 		{
 			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
 			{
-				$fullAccessForumIDs[] = $forum_id;
+				$full_access_forum_IDs[] = $forum_id;
 			}
 		}
 
-		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids))
+		if(sizeof($full_access_forum_IDs) === sizeof($forum_ids))
 		{
 			// Nothing to filter
 			return;
@@ -261,13 +261,13 @@ class mcp_listener implements EventSubscriberInterface
 
 		$sql = $event['sql'];
 
-		$splitedSQL = explode('FROM', $sql, 2);
-		$splitedSQL[1] = ' ' . $this->topics_table . ' t,' . $splitedSQL[1];
-		$sql = implode('FROM', $splitedSQL);
+		$splited_sql = explode('FROM', $sql, 2);
+		$splited_sql[1] = ' ' . $this->topics_table . ' t,' . $splited_sql[1];
+		$sql = implode('FROM', $splited_sql);
 
 		$sql .='
 					AND p.topic_id = t.topic_id
-					AND (' . $this->db->sql_in_set('p.forum_id', $fullAccessForumIDs, true) . '
+					AND (' . $this->db->sql_in_set('p.forum_id', $full_access_forum_IDs, true) . '
 					OR t.topic_poster = ' . (int) $this->user->data['user_id'] . '
 		) ';
 
@@ -279,16 +279,16 @@ class mcp_listener implements EventSubscriberInterface
 	{
 
 		$forum_ids = $event['forum_list'];
-		$fullAccessForumIDs = array();
+		$full_access_forum_IDs = array();
 		foreach($forum_ids AS $forum_id)
 		{
 			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
 			{
-				$fullAccessForumIDs[] = $forum_id;
+				$full_access_forum_IDs[] = $forum_id;
 			}
 		}
 
-		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids))
+		if(sizeof($full_access_forum_IDs) === sizeof($forum_ids))
 		{
 			// Nothing to filter
 			return;
@@ -297,7 +297,7 @@ class mcp_listener implements EventSubscriberInterface
 		$sql_ary = $event['sql_ary'];
 
 		$sql_ary['WHERE'] .= '
-					AND (' . $this->db->sql_in_set('p.forum_id', $fullAccessForumIDs) . '
+					AND (' . $this->db->sql_in_set('p.forum_id', $full_access_forum_IDs) . '
 						OR t.topic_poster = ' . (int) $this->user->data['user_id'] . '
 					)';
 

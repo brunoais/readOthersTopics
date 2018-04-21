@@ -91,13 +91,13 @@ class search_listener implements EventSubscriberInterface
 
 		foreach($rowset AS $key => $row)
 		{
-			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
+			$permission_result = $this->permission_evaluation->permission_evaluate(array(
 				'forum_id' => $row['forum_id'],
 				'topic_poster' => $row['topic_poster'],
 				'topic_type' => $row['topic_type'],
 			));
 
-			if($permissionResult === accesses::NO_READ_OTHER)
+			if($permission_result === accesses::NO_READ_OTHER)
 			{
 				unset($rowset[$key]);
 			}
@@ -151,11 +151,11 @@ class search_listener implements EventSubscriberInterface
 		}
 		else
 		{
-			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
+			$permission_result = $this->permission_evaluation->permission_evaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === accesses::NO_READ_OTHER)
+			if($permission_result === accesses::NO_READ_OTHER)
 			{
 				$event['join_topic'] = true;
 
@@ -213,11 +213,11 @@ class search_listener implements EventSubscriberInterface
 		}
 		else
 		{
-			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
+			$permission_result = $this->permission_evaluation->permission_evaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === accesses::NO_READ_OTHER)
+			if($permission_result === accesses::NO_READ_OTHER)
 			{
 				$event['total_results'] = -1;
 				$event['left_join_topics'] = true;
@@ -277,11 +277,11 @@ class search_listener implements EventSubscriberInterface
 		}
 		else
 		{
-			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
+			$permission_result = $this->permission_evaluation->permission_evaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === accesses::NO_READ_OTHER)
+			if($permission_result === accesses::NO_READ_OTHER)
 			{
 				$event['join_topic'] = true;
 
@@ -300,10 +300,10 @@ class search_listener implements EventSubscriberInterface
 
 		if($topic_id > 0)
 		{
-			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
+			$permission_result = $this->permission_evaluation->permission_evaluate(array(
 				'topic_id' => $topic_id,
 			));
-			if($permissionResult === accesses::NO_READ_OTHER)
+			if($permission_result === accesses::NO_READ_OTHER)
 			{
 				return array('NoAccessResult');
 			}
@@ -418,11 +418,11 @@ class search_listener implements EventSubscriberInterface
 		}
 		else
 		{
-			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
+			$permission_result = $this->permission_evaluation->permission_evaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === accesses::NO_READ_OTHER)
+			if($permission_result === accesses::NO_READ_OTHER)
 			{
 
 				// Workaround for a mistake I made myself when making the event.
@@ -502,11 +502,11 @@ class search_listener implements EventSubscriberInterface
 		}
 		else
 		{
-			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
+			$permission_result = $this->permission_evaluation->permission_evaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === accesses::NO_READ_OTHER)
+			if($permission_result === accesses::NO_READ_OTHER)
 			{
 
 				// Workaround for a mistake I made myself when making the event.
@@ -585,11 +585,11 @@ class search_listener implements EventSubscriberInterface
 		}
 		else
 		{
-			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
+			$permission_result = $this->permission_evaluation->permission_evaluate(array(
 				'topic_id' => $topic_id,
 			));
 
-			if($permissionResult === accesses::NO_READ_OTHER)
+			if($permission_result === accesses::NO_READ_OTHER)
 			{
 
 				// Workaround for a mistake I made myself when making the event.
