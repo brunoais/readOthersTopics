@@ -9,6 +9,9 @@
 
 namespace brunoais\readOthersTopics\shared;
 
+use brunoais\readOthersTopics\shared\accesses;
+
+
 /**
 * Auxiliary content
 */
@@ -33,32 +36,23 @@ class permission_evaluation
 
 	/* @var \brunoais\readOthersTopics\shared\permission_evaluation */
 	protected $permission_evaluation;
-	
-	/* @var \brunoais\readOthersTopics\shared\accesses */
-	protected $accesses;
 
 	/* Tables */
-	public $forums_table;
 	public $topics_table;
 	public $posts_table;
 
 	/**
 	* Constructor
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\content_visibility $content_visibility, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user, \brunoais\readOthersTopics\shared\accesses $accesses,
-	$forums_table, $topics_table, $posts_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\content_visibility $content_visibility, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user, $topics_table, $posts_table)
 	{
 		$this->auth = $auth;
 		$this->phpbb_content_visibility = $content_visibility;
 		$this->db = $db;
 		$this->template = $template;
 		$this->user = $user;
-		$this->accesses = $accesses;
-		$this->forums_table = $forums_table;
 		$this->topics_table = $topics_table;
 		$this->posts_table = $posts_table;
-
-		$this->infoStorage = array();
 	}
 	
 	/**
@@ -74,21 +68,28 @@ class permission_evaluation
 	 */
 	public function permissionEvaluate($info)
 	{
-		if(empty($info['forum_id'])){
-			if(!empty($info['topic_id'])){
+		if(empty($info['forum_id']))
+		{
+			if(!empty($info['topic_id']))
+			{
 				$this->getForumIdAndPosterFromTopic($info);
-			}else if(!empty($info['post_id'])){
+			}
+			else if(!empty($info['post_id']))
+			{
 				$this->getForumIdAndTopicFromPost($info);
 			}
 		}
 
-		if(!$this->auth->acl_get('f_read', $info['forum_id'])){
+		if(!$this->auth->acl_get('f_read', $info['forum_id']))
+		{
 			return accesses::NO_READ;
 		}
 
 
-		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $info['forum_id'])){
-			if($this->user->data['user_id'] == ANONYMOUS){
+		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $info['forum_id']))
+		{
+			if($this->user->data['user_id'] == ANONYMOUS)
+			{
 				return accesses::NO_READ_OTHER;
 			}
 
@@ -98,20 +99,26 @@ class permission_evaluation
 					$info['topic_type'] == POST_ANNOUNCE ||
 					$info['topic_type'] == POST_GLOBAL
 				)
-				){
+				)
+			{
 				return accesses::FULL_READ;
 			}
 
-			if(!isset($info['topic_poster'])){
-				if(!isset($info['topic_id'])){
+			if(!isset($info['topic_poster']))
+			{
+				if(!isset($info['topic_id']))
+				{
 					$this->getForumIdAndTopicFromPost($info);
 				}
 				$this->getPosterAndTypeFromTopicId($info);
 			}
 
-			if($info['topic_poster'] != $this->user->data['user_id']){
-				if(!isset($info['topic_type'])){
-					if(!isset($info['topic_id'])){
+			if($info['topic_poster'] != $this->user->data['user_id'])
+			{
+				if(!isset($info['topic_type']))
+				{
+					if(!isset($info['topic_id']))
+					{
 						$this->getForumIdAndTopicFromPost($info);
 					}
 					$this->getPosterAndTypeFromTopicId($info);
@@ -119,7 +126,8 @@ class permission_evaluation
 				if(
 					$info['topic_type'] != POST_ANNOUNCE &&
 					$info['topic_type'] != POST_GLOBAL
-					){
+					)
+				{
 					return accesses::NO_READ_OTHER;
 				}
 			}
@@ -129,12 +137,14 @@ class permission_evaluation
 
 	}
 	
-	public function accessFailed(){
+	public function accessFailed()
+	{
 		$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
 		trigger_error('SORRY_AUTH_READ_OTHER');
 	}
 
-	private function getForumIdAndPosterFromTopic(&$info){
+	private function getForumIdAndPosterFromTopic(&$info)
+	{
 		$sql = 'SELECT forum_id, topic_poster, topic_type
 				FROM ' . $this->topics_table . '
 				WHERE topic_id = ' . (int) $info['topic_id'];
@@ -148,7 +158,8 @@ class permission_evaluation
 		$this->db->sql_freeresult($result);
 	}
 
-	private function getForumIdAndTopicFromPost(&$info){
+	private function getForumIdAndTopicFromPost(&$info)
+	{
 		$sql = 'SELECT forum_id, topic_id
 				FROM ' . $this->posts_table . '
 				WHERE post_id = ' . (int) $info['post_id'];
@@ -161,7 +172,8 @@ class permission_evaluation
 		$this->db->sql_freeresult($result);
 	}
 
-	private function getPosterAndTypeFromTopicId(&$info){
+	private function getPosterAndTypeFromTopicId(&$info)
+	{
 		$sql = 'SELECT topic_poster, topic_type
 				FROM ' . $this->topics_table . '
 				WHERE topic_id = ' . (int) $info['topic_id'];
@@ -173,7 +185,6 @@ class permission_evaluation
 
 		$this->db->sql_freeresult($result);
 	}
-
 
 }
 

@@ -26,28 +26,21 @@ class language_listener implements EventSubscriberInterface
 		);
 	}
 	
-	public static function insertAtInAssocArray($original, $searchingKey, $newThingKey, $newThing){
-		
+	public static function insertAtInAssocArray($original, $searching_key, $new_thing_key, $new_thing)
+	{
 		$rebuild = array();
-		
-		foreach($original AS $key => $elem){
+		foreach($original AS $key => $elem)
+		{
 			$rebuild[$key] = $elem;
-			if($key == $searchingKey){
-				$rebuild[$newThingKey] = $newThing;
+			if($key == $searching_key)
+			{
+				$rebuild[$new_thing_key] = $new_thing;
 			}
 		}
 		
 		return $rebuild;
-		
 	}
 
-	/**
-	* Constructor
-	*
-	*/
-	public function __construct()
-	{
-	}
 
 	public function adapt_permission_logic($event)
 	{

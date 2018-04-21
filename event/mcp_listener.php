@@ -14,6 +14,8 @@ namespace brunoais\readOthersTopics\event;
 */
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+use brunoais\readOthersTopics\shared\accesses;
+
 /**
 * Event listener
 */
@@ -33,7 +35,7 @@ class mcp_listener implements EventSubscriberInterface
 		);
 	}
 
-	protected $infoStorage;
+	protected $info_storage;
 
 	/* @var \phpbb\auth\auth */
 	protected $auth;
@@ -53,14 +55,9 @@ class mcp_listener implements EventSubscriberInterface
 	/* @var \brunoais\readOthersTopics\shared\permission_evaluation */
 	protected $permission_evaluation;
 	
-	/* @var \brunoais\readOthersTopics\shared\accesses */
-	protected $accesses;
-	
 	
 	/* Tables */
-	public $forums_table;
 	public $topics_table;
-	public $posts_table;
 
 	/**
 	* Constructor
@@ -71,7 +68,7 @@ class mcp_listener implements EventSubscriberInterface
 	*/
 	public function __construct(\phpbb\auth\auth $auth, \phpbb\content_visibility $content_visibility, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user,
 	\brunoais\readOthersTopics\shared\accesses $accesses, \brunoais\readOthersTopics\shared\permission_evaluation $permission_evaluation, 
-	$forums_table, $topics_table, $posts_table)
+	$topics_table)
 	{
 		$this->auth = $auth;
 		$this->phpbb_content_visibility = $content_visibility;
@@ -79,39 +76,42 @@ class mcp_listener implements EventSubscriberInterface
 		$this->template = $template;
 		$this->user = $user;
 		$this->permission_evaluation = $permission_evaluation;
-		$this->accesses = $accesses;
-		$this->forums_table = $forums_table;
 		$this->topics_table = $topics_table;
-		$this->posts_table = $posts_table;
 
-		$this->infoStorage = array();
+		$this->info_storage = array();
 	}
 
-	public function phpbb_mcp_global_f_read_auth_after($event){
-		if($event['forum_id'] && $event['topic_id']){
+	public function phpbb_mcp_global_f_read_auth_after($event)
+	{
+		if($event['forum_id'] && $event['topic_id'])
+		{
 			$permissionResult = $this->permission_evaluation->permissionEvaluate(array(
 				'forum_id' => $event['forum_id'],
 				'topic_id' => $event['topic_id'],
 			));
 
-			$accesses = $this->accesses;
-			if($permissionResult === $accesses::NO_READ_OTHER){
+			if($permissionResult === accesses::NO_READ_OTHER)
+			{
 				trigger_error('NOT_AUTHORISED');
 			}
 		}
 	}
 
-	public function phpbb_mcp_reports_get_reports_query_before($event){
+	public function phpbb_mcp_reports_get_reports_query_before($event)
+	{
 
 		$forum_ids = $event['forum_list'];
 		$fullAccessForumIDs = array();
-		foreach($forum_ids AS $forum_id){
-			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+		foreach($forum_ids AS $forum_id)
+		{
+			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
+			{
 					$fullAccessForumIDs[] = $forum_id;
 			}
 		}
 
-		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids))
+		{
 			// Nothing to filter
 			return;
 		}
@@ -128,10 +128,12 @@ class mcp_listener implements EventSubscriberInterface
 	}
 
 
-	public function phpbb_mcp_sorting_query_before($event){
+	public function phpbb_mcp_sorting_query_before($event)
+	{
 			$fullAccessForumIDs = ($event['forum_id']) ? array($event['forum_id']) : array_intersect(get_forum_list('f_read_others_topics_brunoais'), get_forum_list('m_approve'));
 
-			switch($event['mode']){
+			switch($event['mode'])
+			{
 
 				case 'forum_view':
 
@@ -141,23 +143,28 @@ class mcp_listener implements EventSubscriberInterface
 				break;
 			}
 
-			if($event['where_sql'] === 'WHERE'){
+			if($event['where_sql'] === 'WHERE')
+			{
 				$event['where_sql'] = 'WHERE ';
 			}
 
 	}
 
-	public function phpbb_mcp_front_queue_unapproved_total_before($event){
+	public function phpbb_mcp_front_queue_unapproved_total_before($event)
+	{
 
 		$forum_ids = $event['forum_list'];
 		$fullAccessForumIDs = array();
-		foreach($forum_ids AS $forum_id){
-			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+		foreach($forum_ids AS $forum_id)
+		{
+			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
+			{
 					$fullAccessForumIDs[] = $forum_id;
 			}
 		}
 
-		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids))
+		{
 			// Nothing to filter
 			return;
 		}
@@ -166,7 +173,8 @@ class mcp_listener implements EventSubscriberInterface
 		$from_sql = $event['sql_ary']['FROM'];
 		$where_sql = $event['sql_ary']['WHERE'];
 
-		if(!isset($from_sql[$this->topics_table])){
+		if(!isset($from_sql[$this->topics_table]))
+		{
 			$from_sql[$this->topics_table] = 't';
 			$where_sql = 't.topic_id = p.topic_id
 			AND '. $where_sql;
@@ -183,18 +191,23 @@ class mcp_listener implements EventSubscriberInterface
 
 	}
 
-	public function phpbb_mcp_front_view_queue_postid_list_after($event){
+	public function phpbb_mcp_front_view_queue_postid_list_after($event)
+	{
 
-		if($event['total'] > 0){
+		if($event['total'] > 0)
+		{
 			$forum_ids = $event['forum_list'];
 			$fullAccessForumIDs = array();
-			foreach($forum_ids AS $forum_id){
-				if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+			foreach($forum_ids AS $forum_id)
+			{
+				if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
+				{
 					$fullAccessForumIDs[] = $forum_id;
 				}
 			}
 
-			if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+			if(sizeof($fullAccessForumIDs) === sizeof($forum_ids))
+			{
 				// Nothing to filter
 				return;
 			}
@@ -215,30 +228,33 @@ class mcp_listener implements EventSubscriberInterface
 						)
 						AND ' . $this->db->sql_in_set('post_visibility', array(ITEM_UNAPPROVED, ITEM_REAPPROVE)) . '
 					ORDER BY post_time DESC, post_id DESC';
-				$result = $this->db->sql_query_limit($sql, 5);
+			$result = $this->db->sql_query_limit($sql, 5);
 
-				while ($row = $this->db->sql_fetchrow($result))
-				{
-					$post_list[] = $row['post_id'];
-				}
-				$this->db->sql_freeresult($result);
+			while ($row = $this->db->sql_fetchrow($result))
+			{
+				$post_list[] = $row['post_id'];
+			}
+			$this->db->sql_freeresult($result);
 
-				$event['post_list'] = $post_list;
-				$event['total'] = count($post_list);
-				
+			$event['post_list'] = $post_list;
+			$event['total'] = count($post_list);
 		}
 	}
 
-	public function phpbb_mcp_front_reports_count_query_before($event){
+	public function phpbb_mcp_front_reports_count_query_before($event)
+	{
 		$forum_ids = $event['forum_list'];
 		$fullAccessForumIDs = array();
-		foreach($forum_ids AS $forum_id){
-			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+		foreach($forum_ids AS $forum_id)
+		{
+			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
+			{
 				$fullAccessForumIDs[] = $forum_id;
 			}
 		}
 
-		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids))
+		{
 			// Nothing to filter
 			return;
 		}
@@ -259,17 +275,21 @@ class mcp_listener implements EventSubscriberInterface
 
 	}
 
-	public function phpbb_mcp_front_reports_listing_query_before($event){
+	public function phpbb_mcp_front_reports_listing_query_before($event)
+	{
 
 		$forum_ids = $event['forum_list'];
 		$fullAccessForumIDs = array();
-		foreach($forum_ids AS $forum_id){
-			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id)){
+		foreach($forum_ids AS $forum_id)
+		{
+			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
+			{
 				$fullAccessForumIDs[] = $forum_id;
 			}
 		}
 
-		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids)){
+		if(sizeof($fullAccessForumIDs) === sizeof($forum_ids))
+		{
 			// Nothing to filter
 			return;
 		}
