@@ -54,7 +54,5 @@ class language_listener implements EventSubscriberInterface
 				)
 			);
 		
-		return $event;
-		
 	}
 }
