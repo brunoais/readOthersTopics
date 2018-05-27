@@ -7,7 +7,6 @@ services:
             - '@dbal.conn'
             - '@template'
             - '@user'
-            - '@brunoais.readOthersTopics.shared.accesses'
             - '%tables.topics%'
             - '%tables.posts%'
     brunoais.readOthersTopics.event.main_listener:
@@ -18,7 +17,6 @@ services:
             - '@dbal.conn'
             - '@template'
             - '@user'
-            - '@brunoais.readOthersTopics.shared.accesses'
             - '@brunoais.readOthersTopics.shared.permission_evaluation'
             - '%tables.topics%'
         tags:
@@ -31,7 +29,6 @@ services:
             - '@dbal.conn'
             - '@template'
             - '@user'
-            - '@brunoais.readOthersTopics.shared.accesses'
             - '@brunoais.readOthersTopics.shared.permission_evaluation'
             - '%tables.topics%'
         tags:
@@ -44,7 +41,6 @@ services:
             - '@dbal.conn'
             - '@template'
             - '@user'
-            - '@brunoais.readOthersTopics.shared.accesses'
             - '@brunoais.readOthersTopics.shared.permission_evaluation'
             - '%tables.topics%'
         tags:
