@@ -9,6 +9,13 @@ services:
             - '@user'
             - '%tables.topics%'
             - '%tables.posts%'
+    
+    brunoais.readOthersTopics.event.acp_listener:
+        class: brunoais\readOthersTopics\event\acp_listener
+        arguments:
+            - '@request'
+        tags:
+            - { name: event.listener }
     brunoais.readOthersTopics.event.main_listener:
         class: brunoais\readOthersTopics\event\main_listener
         arguments:
