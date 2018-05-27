@@ -29,10 +29,10 @@ class language_listener implements EventSubscriberInterface
 	public static function insert_at_in_assoc_array($original, $searching_key, $new_thing_key, $new_thing)
 	{
 		$rebuild = array();
-		foreach($original AS $key => $elem)
+		foreach ($original AS $key => $elem)
 		{
 			$rebuild[$key] = $elem;
-			if($key == $searching_key)
+			if ($key == $searching_key)
 			{
 				$rebuild[$new_thing_key] = $new_thing;
 			}

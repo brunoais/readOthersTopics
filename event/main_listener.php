@@ -91,7 +91,7 @@ class main_listener implements EventSubscriberInterface
 
 	public function phpbb_ucp_pm_compose_compose_pm_basic_info_query_before($event)
 	{
-		if($event['action'] === 'quotepost')
+		if ($event['action'] === 'quotepost')
 		{
 			$sql = $event['sql'];
 
@@ -110,7 +110,7 @@ class main_listener implements EventSubscriberInterface
 			'topic_poster' => $event['topic_poster'],
 		));
 
-		if($permission_result === accesses::NO_READ_OTHER)
+		if ($permission_result === accesses::NO_READ_OTHER)
 		{
 			trigger_error('NOT_AUTHORISED');
 		}
@@ -118,7 +118,7 @@ class main_listener implements EventSubscriberInterface
 
 	public function phpbb_modify_posting_auth($event)
 	{
-		if(in_array($event['mode'], array('reply', 'quote', 'edit', 'delete', 'bump'), true))
+		if (in_array($event['mode'], array('reply', 'quote', 'edit', 'delete', 'bump'), true))
 		{
 
 			$permission_result = $this->permission_evaluation->permission_evaluate(array(
@@ -127,7 +127,7 @@ class main_listener implements EventSubscriberInterface
 				'post_id' => $event['post_id'],
 			));
 
-			if($permission_result === accesses::NO_READ_OTHER)
+			if ($permission_result === accesses::NO_READ_OTHER)
 			{
 				trigger_error('NOT_AUTHORISED');
 			}
@@ -145,7 +145,7 @@ class main_listener implements EventSubscriberInterface
 			'topic_type' => $event['report_data']['topic_type'],
 		));
 
-		if($permission_result === accesses::NO_READ_OTHER)
+		if ($permission_result === accesses::NO_READ_OTHER)
 		{
 			trigger_error('POST_NOT_EXIST');
 		}
@@ -157,14 +157,14 @@ class main_listener implements EventSubscriberInterface
 
 		$full_access_forum_IDs = array();
 
-		if($event['log_type'] == LOG_MOD)
+		if ($event['log_type'] == LOG_MOD)
 		{
 			if ($event['topic_id'])
 			{
 				$permission_result = $this->permission_evaluation->permission_evaluate(array(
 					'topic_id' => $event['topic_id'],
 				));
-				if($permission_result === accesses::FULL_READ)
+				if ($permission_result === accesses::FULL_READ)
 				{
 					return;
 				}
@@ -173,15 +173,15 @@ class main_listener implements EventSubscriberInterface
 			{
 				$forum_ids = $event['forum_id'];
 				$full_access_forum_IDs = array();
-				foreach($forum_ids AS $forum_id)
+				foreach ($forum_ids AS $forum_id)
 				{
-					if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
+					if ($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
 					{
 							$full_access_forum_IDs[] = $forum_id;
 					}
 				}
 
-				if(sizeof($full_access_forum_IDs) === sizeof($forum_ids))
+				if (sizeof($full_access_forum_IDs) === sizeof($forum_ids))
 				{
 					// Nothing to filter
 					return;
@@ -189,7 +189,7 @@ class main_listener implements EventSubscriberInterface
 			}
 			else if (!empty($event['forum_id']))
 			{
-				if($this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id']))
+				if ($this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id']))
 				{
 					return;
 				}
@@ -198,14 +198,14 @@ class main_listener implements EventSubscriberInterface
 			{
 				$forum_ids = array_values(array_intersect(get_forum_list('f_read'), get_forum_list('m_')));
 				$full_access_forum_IDs = array();
-				foreach($forum_ids AS $forum_id)
+				foreach ($forum_ids AS $forum_id)
 				{
-					if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
+					if ($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
 					{
 							$full_access_forum_IDs[] = $forum_id;
 					}
 				}
-				if(sizeof($full_access_forum_IDs) === sizeof($forum_ids))
+				if (sizeof($full_access_forum_IDs) === sizeof($forum_ids))
 				{
 					// Nothing to filter
 					return;
@@ -215,7 +215,7 @@ class main_listener implements EventSubscriberInterface
 			$from_sql = $event['get_logs_sql_ary']['FROM'];
 			$where_sql = $event['get_logs_sql_ary']['WHERE'];
 
-			if(!isset($from_sql[$this->topics_table]))
+			if (!isset($from_sql[$this->topics_table]))
 			{
 				$from_sql[$this->topics_table] = 't';
 				$where_sql = 't.topic_id = l.topic_id
@@ -237,9 +237,9 @@ class main_listener implements EventSubscriberInterface
 	public function phpbb_content_visibility_get_visibility_sql_before($event)
 	{
 
-		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id']))
+		if (!$this->auth->acl_get('f_read_others_topics_brunoais', $event['forum_id']))
 		{
-			if($event['mode'] === 'topic')
+			if ($event['mode'] === 'topic')
 			{
 				$event['where_sql'] .= ' (' . $event['table_alias'] . ' topic_poster = ' . (int) $this->user->data['user_id'] . '
 					OR topic_type = ' . POST_GLOBAL . '
@@ -254,20 +254,20 @@ class main_listener implements EventSubscriberInterface
 	{
 
 		// If the event mode is 'post', there's nothing I can do here.
-		if($event['mode'] === 'topic')
+		if ($event['mode'] === 'topic')
 		{
 			$forum_ids = $event['forum_ids'];
 			$full_access_forum_IDs = array();
 
-			foreach($forum_ids AS $forum_id)
+			foreach ($forum_ids AS $forum_id)
 			{
-				if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
+				if ($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
 				{
 						$full_access_forum_IDs[] = $forum_id;
 				}
 			}
 
-			if(sizeof($full_access_forum_IDs) === sizeof($forum_ids))
+			if (sizeof($full_access_forum_IDs) === sizeof($forum_ids))
 			{
 				// Nothing to filter
 				return;
@@ -285,9 +285,9 @@ class main_listener implements EventSubscriberInterface
 
 		$active_forum_ary = $event['active_forum_ary'];
 
-		if(empty($active_forum_ary['exclude_forum_id']))
+		if (empty($active_forum_ary['exclude_forum_id']))
 		{
-			if(empty($active_forum_ary['forum_id']))
+			if (empty($active_forum_ary['forum_id']))
 			{
 				$forum_ids = array();
 			}
@@ -302,9 +302,9 @@ class main_listener implements EventSubscriberInterface
 		}
 
 		$full_access_forum_IDs = array();
-		foreach($forum_ids as $forum_id)
+		foreach ($forum_ids as $forum_id)
 		{
-			if($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
+			if ($this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
 			{
 				$full_access_forum_IDs[] = $forum_id;
 			}
@@ -318,7 +318,7 @@ class main_listener implements EventSubscriberInterface
 	public function phpbb_viewforum_get_topic_data($event)
 	{
 
-		if(!$event['sort_days'])
+		if (!$event['sort_days'])
 		{
 
 			$sql = 'SELECT COUNT(topic_id) AS num_topics
@@ -343,7 +343,7 @@ class main_listener implements EventSubscriberInterface
 	public function phpbb_viewforum_get_topic_ids_data($event)
 	{
 
-		if(	$event['forum_data']['forum_type'] != FORUM_POST &&
+		if (	$event['forum_data']['forum_type'] != FORUM_POST &&
 			strpos($event['sql_where'], 't.forum_id IN') === 0 &&
 			!empty($this->info_storage['ActiveTopicIds']['restrictedAccess']))
 		{
@@ -367,7 +367,7 @@ class main_listener implements EventSubscriberInterface
 			'post_id' => $event['row']['forum_last_post_id'],
 		));
 
-		if($post_access !== accesses::FULL_READ)
+		if ($post_access !== accesses::FULL_READ)
 		{
 			$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
 			$forum_row = $event['forum_row'];
@@ -380,7 +380,7 @@ class main_listener implements EventSubscriberInterface
 			$event['forum_row'] = $forum_row;
 		}
 		
-		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $event['row']['forum_id']))
+		if (!$this->auth->acl_get('f_read_others_topics_brunoais', $event['row']['forum_id']))
 		{
 			$forum_row = $event['forum_row'];
 			$forum_row['TOPICS'] = '-';
@@ -400,7 +400,7 @@ class main_listener implements EventSubscriberInterface
 			'topic_type' => $event['topic_data']['topic_type'],
 		));
 
-		if($permission_result === accesses::NO_READ_OTHER)
+		if ($permission_result === accesses::NO_READ_OTHER)
 		{
 			$this->permission_evaluation->access_failed();
 		}

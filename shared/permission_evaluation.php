@@ -68,32 +68,32 @@ class permission_evaluation
 	 */
 	public function permission_evaluate($info)
 	{
-		if(empty($info['forum_id']))
+		if (empty($info['forum_id']))
 		{
-			if(!empty($info['topic_id']))
+			if (!empty($info['topic_id']))
 			{
 				$this->get_forum_id_and_poster_from_topic($info);
 			}
-			else if(!empty($info['post_id']))
+			else if (!empty($info['post_id']))
 			{
 				$this->get_forum_id_and_poster_from_post($info);
 			}
 		}
 
-		if(!$this->auth->acl_get('f_read', $info['forum_id']))
+		if (!$this->auth->acl_get('f_read', $info['forum_id']))
 		{
 			return accesses::NO_READ;
 		}
 
 
-		if(!$this->auth->acl_get('f_read_others_topics_brunoais', $info['forum_id']))
+		if (!$this->auth->acl_get('f_read_others_topics_brunoais', $info['forum_id']))
 		{
-			if($this->user->data['user_id'] == ANONYMOUS)
+			if ($this->user->data['user_id'] == ANONYMOUS)
 			{
 				return accesses::NO_READ_OTHER;
 			}
 
-			if(
+			if (
 				isset($info['topic_type']) &&
 				(
 					$info['topic_type'] == POST_ANNOUNCE ||
@@ -104,26 +104,26 @@ class permission_evaluation
 				return accesses::FULL_READ;
 			}
 
-			if(!isset($info['topic_poster']))
+			if (!isset($info['topic_poster']))
 			{
-				if(!isset($info['topic_id']))
+				if (!isset($info['topic_id']))
 				{
 					$this->get_forum_id_and_poster_from_post($info);
 				}
 				$this->get_poster_and_type_from_topic_id($info);
 			}
 
-			if($info['topic_poster'] != $this->user->data['user_id'])
+			if ($info['topic_poster'] != $this->user->data['user_id'])
 			{
-				if(!isset($info['topic_type']))
+				if (!isset($info['topic_type']))
 				{
-					if(!isset($info['topic_id']))
+					if (!isset($info['topic_id']))
 					{
 						$this->get_forum_id_and_poster_from_post($info);
 					}
 					$this->get_poster_and_type_from_topic_id($info);
 				}
-				if(
+				if (
 					$info['topic_type'] != POST_ANNOUNCE &&
 					$info['topic_type'] != POST_GLOBAL
 					)

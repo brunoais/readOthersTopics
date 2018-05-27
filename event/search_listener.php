@@ -89,7 +89,7 @@ class search_listener implements EventSubscriberInterface
 
 		$rowset = $event['rowset'];
 
-		foreach($rowset AS $key => $row)
+		foreach ($rowset AS $key => $row)
 		{
 			$permission_result = $this->permission_evaluation->permission_evaluate(array(
 				'forum_id' => $row['forum_id'],
@@ -97,7 +97,7 @@ class search_listener implements EventSubscriberInterface
 				'topic_type' => $row['topic_type'],
 			));
 
-			if($permission_result === accesses::NO_READ_OTHER)
+			if ($permission_result === accesses::NO_READ_OTHER)
 			{
 				unset($rowset[$key]);
 			}
@@ -109,7 +109,7 @@ class search_listener implements EventSubscriberInterface
 	{
 		$topic_id = $event['topic_id'];
 
-		if(empty($topic_id))
+		if (empty($topic_id))
 		{
 
 			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
@@ -118,13 +118,13 @@ class search_listener implements EventSubscriberInterface
 
 			$partial_read_access_fids = $full_read_access_fids = array();
 
-			foreach($forums_permissions as $forum_id => $forum_permissions)
+			foreach ($forums_permissions as $forum_id => $forum_permissions)
 			{
 
-				if(isset($forum_permissions['f_read']) &&
+				if (isset($forum_permissions['f_read']) &&
 						!isset($ex_fid_keys[$forum_id]))
 				{
-					if(isset($forum_permissions['f_read_others_topics_brunoais']))
+					if (isset($forum_permissions['f_read_others_topics_brunoais']))
 					{
 						$full_read_access_fids[$forum_id] = $forum_id;
 					}else{
@@ -133,7 +133,7 @@ class search_listener implements EventSubscriberInterface
 				}
 			}
 
-			if(sizeof($partial_read_access_fids) > 0)
+			if (sizeof($partial_read_access_fids) > 0)
 			{
 				// The filter has to be in place
 				$event['join_topic'] = true;
@@ -155,7 +155,7 @@ class search_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permission_result === accesses::NO_READ_OTHER)
+			if ($permission_result === accesses::NO_READ_OTHER)
 			{
 				$event['join_topic'] = true;
 
@@ -172,7 +172,7 @@ class search_listener implements EventSubscriberInterface
 	{
 		$topic_id = $event['topic_id'];
 
-		if(empty($topic_id))
+		if (empty($topic_id))
 		{
 
 			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
@@ -181,13 +181,13 @@ class search_listener implements EventSubscriberInterface
 
 			$partial_read_access_fids = $full_read_access_fids = array();
 
-			foreach($forums_permissions as $forum_id => $forum_permissions)
+			foreach ($forums_permissions as $forum_id => $forum_permissions)
 			{
 
-				if(isset($forum_permissions['f_read']) &&
+				if (isset($forum_permissions['f_read']) &&
 					!isset($ex_fid_keys[$forum_id]))
 				{
-					if(isset($forum_permissions['f_read_others_topics_brunoais']))
+					if (isset($forum_permissions['f_read_others_topics_brunoais']))
 					{
 						$full_read_access_fids[$forum_id] = $forum_id;
 					}else{
@@ -196,7 +196,7 @@ class search_listener implements EventSubscriberInterface
 				}
 			}
 
-			if(sizeof($partial_read_access_fids) > 0)
+			if (sizeof($partial_read_access_fids) > 0)
 			{
 				// The filter has to be in place
 				$event['total_results'] = false;
@@ -217,7 +217,7 @@ class search_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permission_result === accesses::NO_READ_OTHER)
+			if ($permission_result === accesses::NO_READ_OTHER)
 			{
 				$event['total_results'] = -1;
 				$event['left_join_topics'] = true;
@@ -235,7 +235,7 @@ class search_listener implements EventSubscriberInterface
 	{
 		$topic_id = $event['topic_id'];
 
-		if(empty($topic_id))
+		if (empty($topic_id))
 		{
 
 			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
@@ -244,13 +244,13 @@ class search_listener implements EventSubscriberInterface
 
 			$partial_read_access_fids = $full_read_access_fids = array();
 
-			foreach($forums_permissions as $forum_id => $forum_permissions)
+			foreach ($forums_permissions as $forum_id => $forum_permissions)
 			{
 
-				if(isset($forum_permissions['f_read']) &&
+				if (isset($forum_permissions['f_read']) &&
 					!isset($ex_fid_keys[$forum_id]))
 				{
-					if(isset($forum_permissions['f_read_others_topics_brunoais']))
+					if (isset($forum_permissions['f_read_others_topics_brunoais']))
 					{
 						$full_read_access_fids[$forum_id] = $forum_id;
 					}
@@ -261,7 +261,7 @@ class search_listener implements EventSubscriberInterface
 				}
 			}
 
-			if(sizeof($partial_read_access_fids) > 0)
+			if (sizeof($partial_read_access_fids) > 0)
 			{
 				// The filter has to be in place
 				$event['join_topic'] = true;
@@ -281,7 +281,7 @@ class search_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permission_result === accesses::NO_READ_OTHER)
+			if ($permission_result === accesses::NO_READ_OTHER)
 			{
 				$event['join_topic'] = true;
 
@@ -298,12 +298,12 @@ class search_listener implements EventSubscriberInterface
 	private function search_cache_check($search_key_array, $topic_id, $excluding_forums)
 	{
 
-		if($topic_id > 0)
+		if ($topic_id > 0)
 		{
 			$permission_result = $this->permission_evaluation->permission_evaluate(array(
 				'topic_id' => $topic_id,
 			));
-			if($permission_result === accesses::NO_READ_OTHER)
+			if ($permission_result === accesses::NO_READ_OTHER)
 			{
 				return array('NoAccessResult');
 			}
@@ -313,12 +313,12 @@ class search_listener implements EventSubscriberInterface
 			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
 			$ex_fid_keys = array_keys($excluding_forums);
 
-			foreach($forums_permissions as $forum_id => $forum_permissions)
+			foreach ($forums_permissions as $forum_id => $forum_permissions)
 			{
-				if(isset($forum_permissions['f_read']) &&
+				if (isset($forum_permissions['f_read']) &&
 					!isset($ex_fid_keys[$forum_id]))
 				{
-					if(!isset($forum_permissions['f_read_others_topics_brunoais']))
+					if (!isset($forum_permissions['f_read_others_topics_brunoais']))
 					{
 						$search_key_array[] = (int) $this->user->data['user_id'];
 						return $search_key_array;
@@ -365,7 +365,7 @@ class search_listener implements EventSubscriberInterface
 
 		$topic_id = $event['topic_id'];
 
-		if(empty($topic_id))
+		if (empty($topic_id))
 		{
 
 			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
@@ -374,13 +374,13 @@ class search_listener implements EventSubscriberInterface
 
 			$partial_read_access_fids = $full_read_access_fids = array();
 
-			foreach($forums_permissions as $forum_id => $forum_permissions)
+			foreach ($forums_permissions as $forum_id => $forum_permissions)
 			{
 
-				if(isset($forum_permissions['f_read']) &&
+				if (isset($forum_permissions['f_read']) &&
 					!isset($ex_fid_keys[$forum_id]))
 				{
-					if(isset($forum_permissions['f_read_others_topics_brunoais']))
+					if (isset($forum_permissions['f_read_others_topics_brunoais']))
 					{
 						$full_read_access_fids[$forum_id] = $forum_id;
 					}
@@ -391,7 +391,7 @@ class search_listener implements EventSubscriberInterface
 				}
 			}
 
-			if(sizeof($partial_read_access_fids) > 0)
+			if (sizeof($partial_read_access_fids) > 0)
 			{
 				// The filter has to be in place
 
@@ -422,7 +422,7 @@ class search_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permission_result === accesses::NO_READ_OTHER)
+			if ($permission_result === accesses::NO_READ_OTHER)
 			{
 
 				// Workaround for a mistake I made myself when making the event.
@@ -449,7 +449,7 @@ class search_listener implements EventSubscriberInterface
 
 		$topic_id = $event['topic_id'];
 
-		if(empty($topic_id))
+		if (empty($topic_id))
 		{
 
 			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
@@ -460,13 +460,13 @@ class search_listener implements EventSubscriberInterface
 
 			$partial_read_access_fids = $full_read_access_fids = array();
 
-			foreach($forums_permissions as $forum_id => $forum_permissions)
+			foreach ($forums_permissions as $forum_id => $forum_permissions)
 			{
 
-				if(isset($forum_permissions['f_read']) &&
+				if (isset($forum_permissions['f_read']) &&
 					!isset($ex_fid_keys[$forum_id]))
 				{
-					if(isset($forum_permissions['f_read_others_topics_brunoais']))
+					if (isset($forum_permissions['f_read_others_topics_brunoais']))
 					{
 						$full_read_access_fids[$forum_id] = $forum_id;
 					}
@@ -477,7 +477,7 @@ class search_listener implements EventSubscriberInterface
 				}
 			}
 
-			if(sizeof($partial_read_access_fids) > 0)
+			if (sizeof($partial_read_access_fids) > 0)
 			{
 				// The filter has to be in place
 
@@ -506,7 +506,7 @@ class search_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permission_result === accesses::NO_READ_OTHER)
+			if ($permission_result === accesses::NO_READ_OTHER)
 			{
 
 				// Workaround for a mistake I made myself when making the event.
@@ -535,7 +535,7 @@ class search_listener implements EventSubscriberInterface
 
 		$topic_id = $event['topic_id'];
 
-		if(empty($topic_id))
+		if (empty($topic_id))
 		{
 
 			$forums_permissions = $this->auth->acl_get_list($this->user->data['user_id'], array('f_read', 'f_read_others_topics_brunoais'));
@@ -544,13 +544,13 @@ class search_listener implements EventSubscriberInterface
 
 			$partial_read_access_fids = $full_read_access_fids = array();
 
-			foreach($forums_permissions as $forum_id => $forum_permissions)
+			foreach ($forums_permissions as $forum_id => $forum_permissions)
 			{
 
-				if(isset($forum_permissions['f_read']) &&
+				if (isset($forum_permissions['f_read']) &&
 					!isset($ex_fid_keys[$forum_id]))
 				{
-					if(isset($forum_permissions['f_read_others_topics_brunoais']))
+					if (isset($forum_permissions['f_read_others_topics_brunoais']))
 					{
 						$full_read_access_fids[$forum_id] = $forum_id;
 					}else{
@@ -559,7 +559,7 @@ class search_listener implements EventSubscriberInterface
 				}
 			}
 
-			if(sizeof($partial_read_access_fids) > 0)
+			if (sizeof($partial_read_access_fids) > 0)
 			{
 				// The filter has to be in place
 
@@ -589,7 +589,7 @@ class search_listener implements EventSubscriberInterface
 				'topic_id' => $topic_id,
 			));
 
-			if($permission_result === accesses::NO_READ_OTHER)
+			if ($permission_result === accesses::NO_READ_OTHER)
 			{
 
 				// Workaround for a mistake I made myself when making the event.
