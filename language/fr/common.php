@@ -29,6 +29,6 @@ if (empty($lang) || !is_array($lang))
 // All language files should use UTF-8 as their encoding and the files must not contain a BOM.
 
 $lang = array_merge($lang, array(
-	'SORRY_AUTH_READ_OTHER'			=> 'Vous n\'êtes pas autorisé à lire ce sujet.',
+	'SORRY_AUTH_READ_OTHER'			=> 'Vous n’êtes pas autorisé à lire ce sujet.',
 	'SORRY_CLASSIFIED_INFORMATION'	=> 'Confidentiel.',
 ));

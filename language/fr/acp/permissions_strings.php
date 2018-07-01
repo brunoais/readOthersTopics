@@ -28,6 +28,6 @@ $lang = array_merge($lang, array(
 
 	'ACL_F_READ_OTHERS_TOPICS' => 'Peut lire les sujets postés par un autre',
 	'BRUNOAIS_ROLE_READ_OTHERS_TOPICS' => 'Accès standard sans lecture sujets postés par un autre',
-	'BRUNOAIS_ROLE_DESCRIPTION_READ_OTHERS_TOPICS' => 'Peut utiliser les fonctions standards d\'un forum sans pouvoir lire les sujets postés par quelqu\'un d\'autre',
+	'BRUNOAIS_ROLE_DESCRIPTION_READ_OTHERS_TOPICS' => 'Peut utiliser les fonctions standards d’un forum sans pouvoir lire les sujets postés par quelqu’un d’autre',
 
 ));
