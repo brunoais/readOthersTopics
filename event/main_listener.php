@@ -320,23 +320,25 @@ class main_listener implements EventSubscriberInterface
 
 		if (!$event['sort_days'])
 		{
-
-			$sql = 'SELECT COUNT(topic_id) AS num_topics
-				FROM ' . TOPICS_TABLE . '
-				WHERE
-					topic_type = ' . POST_GLOBAL . "
-					OR (
-						forum_id = {$event['forum_id']}
-						AND (
-							topic_type = " . POST_ANNOUNCE . '
-						 OR ' . $this->phpbb_content_visibility->get_visibility_sql('topic', $event['forum_id']) . '
-					))';
-			$result = $this->db->sql_query($sql);
-			$event['topics_count'] = (int) $this->db->sql_fetchfield('num_topics');
-			$this->db->sql_freeresult($result);
-
+			$forum_id = (int) $event['forum_id'];
+			
+			if(!$this->auth->acl_get('f_read_others_topics_brunoais', $forum_id))
+			{
+				$sql = 'SELECT COUNT(topic_id) AS num_topics
+					FROM ' . TOPICS_TABLE . '
+					WHERE
+						topic_type = ' . POST_GLOBAL . "
+						OR (
+							forum_id = {$forum_id}
+							AND (
+								topic_type = " . POST_ANNOUNCE . '
+							 OR ' . $this->phpbb_content_visibility->get_visibility_sql('topic', $forum_id) . '
+						))';
+				$result = $this->db->sql_query($sql);
+				$event['topics_count'] = (int) $this->db->sql_fetchfield('num_topics');
+				$this->db->sql_freeresult($result);
+			}
 		}
-
 	}
 
 
