@@ -31,6 +31,7 @@ services:
             - '@user'
             - '@brunoais.readOthersTopics.shared.permission_evaluation'
             - '%tables.topics%'
+            - '%tables.posts%'
         tags:
             - { name: event.listener }
     brunoais.readOthersTopics.event.search_listener:

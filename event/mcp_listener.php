@@ -56,6 +56,7 @@ class mcp_listener implements EventSubscriberInterface
 	
 	/* Tables */
 	public $topics_table;
+	public $posts_table;
 
 	/**
 	* Constructor
@@ -65,7 +66,7 @@ class mcp_listener implements EventSubscriberInterface
 	* @param	\phpbb\db\driver\driver_interface	$db		Database object
 	*/
 	public function __construct(\phpbb\auth\auth $auth, \phpbb\content_visibility $content_visibility, \phpbb\db\driver\driver_interface $db, \phpbb\template\template $template, \phpbb\user $user, \brunoais\readOthersTopics\shared\permission_evaluation $permission_evaluation, 
-	$topics_table)
+	$topics_table, $posts_table)
 	{
 		$this->auth = $auth;
 		$this->phpbb_content_visibility = $content_visibility;
@@ -74,6 +75,7 @@ class mcp_listener implements EventSubscriberInterface
 		$this->user = $user;
 		$this->permission_evaluation = $permission_evaluation;
 		$this->topics_table = $topics_table;
+		$this->posts_table = $posts_table;
 	}
 
 	public function phpbb_mcp_global_f_read_auth_after($event)
