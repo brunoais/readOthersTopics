@@ -49,3 +49,15 @@ services:
         class: brunoais\readOthersTopics\event\language_listener
         tags:
             - { name: event.listener }
+    
+    message.form.topic:
+        class: brunoais\readOthersTopics\overrides\message\topic_form
+        arguments:
+            - '@brunoais.readOthersTopics.shared.permission_evaluation'
+            - '@auth'
+            - '@config'
+            - '@dbal.conn'
+            - '@user'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+        
