@@ -35,8 +35,6 @@ class mcp_listener implements EventSubscriberInterface
 		);
 	}
 
-	protected $info_storage;
-
 	/* @var \phpbb\auth\auth */
 	protected $auth;
 
@@ -76,8 +74,6 @@ class mcp_listener implements EventSubscriberInterface
 		$this->user = $user;
 		$this->permission_evaluation = $permission_evaluation;
 		$this->topics_table = $topics_table;
-
-		$this->info_storage = array();
 	}
 
 	public function phpbb_mcp_global_f_read_auth_after($event)
