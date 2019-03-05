@@ -363,15 +363,8 @@ class main_listener implements EventSubscriberInterface
 
 	public function phpbb_display_forums_modify_template_vars($event)
 	{
-		
-		$post_access = $this->permission_evaluation->permission_evaluate(array(
-			'forum_id' => $event['row']['forum_id_last_post'],
-			'post_id' => $event['row']['forum_last_post_id'],
-		));
-
-		if ($post_access !== accesses::FULL_READ)
+		if (!$this->auth->acl_get('f_read_others_topics_brunoais', $event['row']['forum_id']))
 		{
-			$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
 			$forum_row = $event['forum_row'];
 			$forum_row['LAST_POSTER_FULL'] = '-';
 			$forum_row['U_LAST_POST'] = '#';
@@ -379,12 +372,6 @@ class main_listener implements EventSubscriberInterface
 			$forum_row['LAST_POST_SUBJECT_TRUNCATED'] = '*' . $this->user->lang('SORRY_CLASSIFIED_INFORMATION') . '*';
 			$forum_row['LAST_POST_TIME'] = '-';
 			$forum_row['S_IS_CLASSIFIED'] = true;
-			$event['forum_row'] = $forum_row;
-		}
-		
-		if (!$this->auth->acl_get('f_read_others_topics_brunoais', $event['row']['forum_id']))
-		{
-			$forum_row = $event['forum_row'];
 			$forum_row['TOPICS'] = '-';
 			$forum_row['POSTS'] = '-';
 			$event['forum_row'] = $forum_row;
