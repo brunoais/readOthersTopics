@@ -365,6 +365,7 @@ class main_listener implements EventSubscriberInterface
 	{
 		if (!$this->auth->acl_get('f_read_others_topics_brunoais', $event['row']['forum_id']))
 		{
+			$this->user->add_lang_ext('brunoais/readOthersTopics', 'common');
 			$forum_row = $event['forum_row'];
 			$forum_row['LAST_POSTER_FULL'] = '-';
 			$forum_row['U_LAST_POST'] = '#';

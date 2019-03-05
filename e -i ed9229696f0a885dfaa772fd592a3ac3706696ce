@@ -1,0 +1,1013 @@
+[33mcommit 5562f1b14c05c71983c960b89f3c36b9d21b2a9d[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Gabrielius Laurinavičius <gabrielius9915@gmail.com>
+Date:   Tue Mar 5 13:28:09 2019 +0200
+
+    Stop altering default last post info
+
+[33mcommit ed9229696f0a885dfaa772fd592a3ac3706696ce[m
+Author: Gabrielius Laurinavičius <gabrielius9915@gmail.com>
+Date:   Tue Mar 5 12:51:52 2019 +0200
+
+    Fix es and es_x_tu language files
+
+[33mcommit 75b942e8a3f777b64b2b391b6b76a93b8b083f59[m
+Merge: 8b9595f 3ff1916
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Aug 16 18:09:17 2018 +0100
+
+    Merge pull request #16 from phpbb-es/master
+    
+    Spanish translations
+
+[33mcommit 3ff19164ab2fe98a95efd55d5821d15fce079ca2[m
+Author: ThE KuKa <thekuka@gmail.com>
+Date:   Thu Aug 16 17:15:18 2018 +0200
+
+    Spanish translations
+    
+    Added Spanish translations:
+    
+    Casual Honorifics (TÚ) - /es_x_tu
+    Formal Honorifics - /es
+    
+    Best regards.
+
+[33mcommit 8b9595f5cae8cec4b7300761088d90e1ab66fe93[m
+Merge: 89cc848 8b6b7d7
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Aug 6 18:41:52 2018 +0100
+
+    Merge pull request #15 from heinrich-k/patch-1
+    
+    Added German Language
+
+[33mcommit 8b6b7d72e5df6b5b41be0b359f0a266b92ed9c26[m
+Author: Heinrich Krebs <hchkrebs@web.de>
+Date:   Mon Aug 6 17:11:36 2018 +0200
+
+    removed double and tailing space
+
+[33mcommit 9e9fe52f60275fae89b71e01188ebb0ca774ecdb[m
+Author: Heinrich Krebs <hchkrebs@web.de>
+Date:   Mon Aug 6 17:10:55 2018 +0200
+
+    Fixed tailing and double spaces....
+
+[33mcommit 487025b4408b2953273f00c99eed28474ad62b2d[m
+Author: Heinrich Krebs <hchkrebs@web.de>
+Date:   Mon Aug 6 16:23:43 2018 +0200
+
+    Remove files from this directory...
+
+[33mcommit fbdc33a98468c851f869d0a33f168b9084dc7451[m
+Author: Heinrich Krebs <hchkrebs@web.de>
+Date:   Mon Aug 6 16:21:07 2018 +0200
+
+    German Language file (honorific)
+
+[33mcommit 204e5bd48ccdffcb6fbf78c8cfd5ee168e2b3569[m
+Author: Heinrich Krebs <hchkrebs@web.de>
+Date:   Mon Aug 6 16:19:50 2018 +0200
+
+    Create common.php
+
+[33mcommit e6c8ffce0dbfddb9a8da831876bf6cc043d08739[m
+Author: Heinrich Krebs <hchkrebs@web.de>
+Date:   Mon Aug 6 16:17:21 2018 +0200
+
+    Create permissions_strings.php
+
+[33mcommit 9623057ce1aab26f9098fd134ac2c610e3954614[m
+Author: Heinrich Krebs <hchkrebs@web.de>
+Date:   Mon Aug 6 16:16:50 2018 +0200
+
+    German language files (casual)
+
+[33mcommit 664ee1b2756f779c35fd24f9bfb31d5f51c27e0c[m
+Author: Heinrich Krebs <hchkrebs@web.de>
+Date:   Mon Aug 6 16:13:03 2018 +0200
+
+    German Language files (casual)
+    
+    German language files.
+
+[33mcommit 89cc848a63733bcfe2f4e64b358fd32b50f5b7ea[m[33m ([m[1;33mtag: v.1.0.5[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Wed Jul 25 22:00:30 2018 +0100
+
+    version BUMP
+
+[33mcommit 465c984a9a3429891abfb6fb1f0dcb78832ee454[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Wed Jul 25 22:00:16 2018 +0100
+
+    Due to variadic function, this is actually only compatible with PHP 5.6+
+
+[33mcommit 61842511a9cf8c6e14a76ba7826606f0e1a7860b[m[33m ([m[1;33mtag: v.1.0.4[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jul 1 17:01:19 2018 +0100
+
+    Version BUMP
+
+[33mcommit d8135f5066b2782c7b0b99f6e0b830d08d86fb01[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jul 1 17:00:08 2018 +0100
+
+    Bugfix: adding missing "posts" variable back to mcp_listerner.php
+
+[33mcommit cbdec39b7025042b848d9ac3ad15184bc863d4ff[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jul 1 16:33:50 2018 +0100
+
+    Change single quotes to apostrophes in language files
+
+[33mcommit 84aa50376caa00ba654b7a90e9673e79283cefa7[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jul 1 16:32:57 2018 +0100
+
+    Security fix: Block e-mailing a topic that is not visible to the user
+
+[33mcommit ffe8a3b75e762b3d3b648773e9cca1e503763775[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jul 1 16:31:28 2018 +0100
+
+    remvove info_storage in mcp_listener
+
+[33mcommit 71347c6ad5937da40b682d68029ac8b928a2dfd9[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jul 1 16:30:05 2018 +0100
+
+    Performance: Only change the topic count on forums with limited viewing ability
+
+[33mcommit 9b8093d9eb02bbf800cdb79dfaf87febfc2318d5[m[33m ([m[1;33mtag: v.1.0.3[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun May 27 16:10:23 2018 +0100
+
+    BUMP version
+
+[33mcommit 7320106ea79b5c4202fd5874bfd571c73ec9f644[m[33m ([m[1;33mtag: 1.0.3[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun May 27 13:17:11 2018 +0100
+
+    Whitespace changes to comply better with phpBB's code guidelines
+
+[33mcommit d872b7a8427f6851c1801845ea4b3813c0ea6281[m
+Merge: b68688b 422ac09
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun May 27 12:51:34 2018 +0100
+
+    Merge pull request #13 from GLedoussal/master
+    
+    French translation
+
+[33mcommit b68688bbeaa7da25f67e65568a7d621a55b5ad0d[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun May 27 12:41:13 2018 +0100
+
+    removing $accesses from mcp_listener
+
+[33mcommit a3425d4da370073036f0d3b1289e0edb9c98d99a[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun May 27 12:36:59 2018 +0100
+
+    removing shared from the services (no need for the access)
+
+[33mcommit 422ac09f6ad0f9b17b04cb84e345f606a4d5ae6e[m
+Author: Gwendal LE DOUSSAL <ledoussal.gwendal@gmail.com>
+Date:   Sat May 26 18:50:26 2018 +0200
+
+    French translation
+
+[33mcommit 34b3361b6c2e87744f10a42d46663ff5170dfae0[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Apr 22 15:12:45 2018 +0100
+
+    Adding 'SORRY_CLASSIFIED_INFORMATION' to the Italian (whether or not well translated)
+
+[33mcommit a0eea1ba4d5cc6447742a38b9011333ad2ebdaf6[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Apr 22 15:09:47 2018 +0100
+
+    Removing unnecessary return statement
+
+[33mcommit 895133def3df110c57a2483bc95aa748074482e9[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Apr 21 20:18:16 2018 +0100
+
+    Even more changes to please the extension evaluation
+
+[33mcommit 64a8c3be30c36eaf3d80f72f9f3c793c0f38e58f[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Apr 21 20:04:17 2018 +0100
+
+    Changes to please the complaints of the evaluators.
+
+[33mcommit 534e65d08d10d219e236e71e5897028f810937e8[m[33m ([m[1;33mtag: 1.0.2[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Apr 16 19:02:23 2018 +0100
+
+    BUMP the version
+
+[33mcommit ed7ea2147749e0301758f612d610234712f974f3[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Apr 16 18:59:42 2018 +0100
+
+    Compatibility with version 5.6
+
+[33mcommit 55ed25ead333277f5abc356627ab01f5dbc0a1c8[m[33m ([m[1;33mtag: 1.0.1[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Feb 17 16:59:31 2018 +0000
+
+    BUMP the version
+
+[33mcommit d16bffbbea41d7f7dbf93f16ea13056f1e68a993[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Feb 17 16:48:52 2018 +0000
+
+    Don't show the topic title of a topic in a subforum when the user doesn't have access to it
+    
+    Fixes #9
+
+[33mcommit e5d6cdfba36c7c8f7b122a2041e23512d0d487c0[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Feb 17 17:18:52 2018 +0000
+
+    forum_id can be not set at this point
+
+[33mcommit 7b40308daec63e0e45ad411aa9a8b0330dc9b4ee[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Feb 17 16:47:26 2018 +0000
+
+    There was a way to search for permissions to an unset topic id
+    
+    If forum_id and post_id are provided and the topic is not announcement nor global and has f_read permission,
+    There was a way to try getting a topic type of a topic_id that was not set. This fixes it
+
+[33mcommit 68b310e4d5fa45a69c021ee9b1254974956bfba4[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Feb 17 16:43:05 2018 +0000
+
+    permission_evaluation was returning "true" in one occasion which was unwanted.
+
+[33mcommit 29df58d39a560bc0fbab911480261881a7797a9c[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Nov 6 13:06:33 2017 +0000
+
+    Added soft-require back.
+    
+    Sorry for the delay
+
+[33mcommit 71318743d3472388a56f9baa4a30d78da17f9594[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon May 22 22:14:35 2017 +0100
+
+    soft require has to be the same as the require... ... .... For some reason.
+    
+    If that, just remove the duplicate!!!
+
+[33mcommit 075a223006f9b32270fe8fbebae5bcca45ff804a[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon May 22 22:13:02 2017 +0100
+
+    Not allowed for QOL role positioning. The new role of this extension is now placed at the end.
+
+[33mcommit 4fd5ed8d7776f0b0d8a41611975a3b80bc07639c[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon May 22 22:12:17 2017 +0100
+
+    ext.php was just plain wrong for this extension. Now it is correct
+
+[33mcommit 459d7762f4d018d3493cd4b6a366029a44886fb0[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon May 22 22:11:13 2017 +0100
+
+    Make classified Information text more correctly for phpBB
+
+[33mcommit b8aa0c5778429570ca86af6a8059e9f044641b72[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon May 22 21:59:23 2017 +0100
+
+    insertAtInAssocArray is probably closer naming to what it really is
+
+[33mcommit 005e8e352b06614033cd0fd980cafb7ab1a0cb0a[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon May 22 21:58:59 2017 +0100
+
+    Fixing the display name to match the one in the extensions database
+
+[33mcommit 2c53e50c33328e149b3bba3d287fada4d6a5cd7e[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Apr 24 19:16:29 2017 +0100
+
+    FIX: mcp_front: filtering when it is needed was always giving an empty list
+
+[33mcommit 0c8ab0bad612c842fc21afea61eedd0fa25ef686[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Apr 24 19:15:45 2017 +0100
+
+    FIX: mcp_front: MCP with no results due to filtering was creating an error
+
+[33mcommit e662327abd9359957e13963daafcd40b30981c48[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Apr 15 23:56:53 2017 +0100
+
+    Don't fail when accessing a link one cannot see
+
+[33mcommit 56957444f990a098cc6633f44ccc9e44c10a7290[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Apr 15 14:09:08 2017 +0100
+
+    Making more friendly to phpBB's guidelines
+
+[33mcommit 1c8bda95a1b2a5616268cc6a65e0c066f4dfe036[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Apr 15 14:08:31 2017 +0100
+
+    add FULL_READ in accesses to avoid boolean true instead of a consistent outcome
+
+[33mcommit a548e34962d09d9e64758dfc9a8e06624a0ca4c5[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Apr 15 14:07:43 2017 +0100
+
+    Make phpBB 3.1.5 a requirement to prevent complaints
+
+[33mcommit dca1aebdaf42786db0518e56a7902db7217f0ab4[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Fri Apr 14 23:11:25 2017 +0100
+
+    quoting params in services.yml
+
+[33mcommit 5ef6c845fd6203d42f6a325eeb5c4d89463b13b3[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Fri Apr 14 21:41:50 2017 +0100
+
+    BUMP minimum phpBB version. Still works with 3.1.5, though
+
+[33mcommit 7b7b3ae329752106d76ccc4e70edd5406426f5f8[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Fri Apr 14 21:41:27 2017 +0100
+
+    Separating the files for easier code edits and avoid problems with huge files
+
+[33mcommit e40595743f57028ddd64eeaae85897395932faeb[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Fri Apr 14 16:58:41 2017 +0100
+
+    forgot to move the search_backend_search_aftered() method
+
+[33mcommit b02a22baba7f7489949c8254b5441ffb078dc997[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Fri Apr 14 16:51:07 2017 +0100
+
+    bump maximum phpbb version
+
+[33mcommit ca24f1219bfce3f8cf0d9b6640366706b6d61faa[m[33m ([m[1;31morigin/fixingSearchForReal[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Fri Apr 14 15:00:51 2017 +0100
+
+    fix search for real.
+    
+    There were 2 super simple mistakes that were causing index misses
+
+[33mcommit eb8175dd4064a427ee938ab688798b2607d39714[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Dec 29 14:08:23 2016 +0000
+
+    Disable search_backend_search_after
+    
+    It was not being used and it didn't work properly anyway.
+
+[33mcommit aa6dcd3be6798d6f78ef6d0860512099e2d761dc[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Dec 17 13:29:56 2016 +0000
+
+    When throwing an exception, use the global Exception class instead of searching locally.
+
+[33mcommit ae0a948f4ce655809f5cdb6b9ba8c580cff42736[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Dec 17 13:28:33 2016 +0000
+
+    removed a stray var_dump()
+
+[33mcommit 6b69b6f2dc7cd4501c7507a7e0c65842cba41d1b[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Wed Jun 8 19:09:32 2016 +0100
+
+    [main_listener] search_backend_search_after() (try 4)
+
+[33mcommit 613833527f48e9f574cde2d169c66b0fb0ffb98e[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat May 28 10:40:36 2016 +0100
+
+    [main_listener] Ups... not that kind of "=="
+
+[33mcommit 87bec906251e38d5028232853db398c3923621ff[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat May 28 10:28:40 2016 +0100
+
+    Fix bug reported by thebigmattb: error in empty reports list
+
+[33mcommit 89df45fb08005cb2f6aa903e0b04bbf4ed7c5c04[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat May 28 10:28:06 2016 +0100
+
+    Whitespace normalizing at the top
+
+[33mcommit 6b57c57c0d2f0f1af5b36783617cb31b721215c6[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat May 28 10:27:31 2016 +0100
+
+    [main_listener] Replace "constant" strings with constants for auto checks
+
+[33mcommit 49783adbb021d599d40c4088080506b97998586d[m[33m ([m[1;33mtag: 1.0.0[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Apr 3 10:35:39 2016 +0100
+
+    [TR][IT] Re-added the mistakenly deleted Mauron's IT translation
+    
+    https://github.com/Mauron
+
+[33mcommit f6aec672053f7821d1cb3799f12027f368408e19[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Apr 2 20:30:02 2016 +0100
+
+    version bump
+
+[33mcommit 798b61f35e7355809ae4809920fb6c82cdcff2eb[m[33m ([m[1;33mtag: 0.9.2b[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Mar 3 17:27:04 2016 +0000
+
+    version bump
+
+[33mcommit 2d6690eff697ccea3be536e5e5773479ac426040[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Mar 3 17:26:51 2016 +0000
+
+    [main_listener][BUG] I was calling array_keys() when I actually needed to use array_flip()
+
+[33mcommit e2a367180da0a853f17103933a380e603be65496[m[33m ([m[1;33mtag: 0.9.1b[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Oct 22 13:27:52 2015 +0100
+
+    version bump
+
+[33mcommit ce39156bb9486e5d4836046619d0f82ae0f021dc[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Oct 22 13:27:30 2015 +0100
+
+    [main_listener] Empty sets were unexpected on these places... Oh well... I guess I thought wrong
+
+[33mcommit 3e2f9e2febc31dc63674deea7fbeb0e15a4b591a[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Oct 5 22:22:19 2015 +0100
+
+    [main_listener] mysql_author_native I overlooked. There was a missing table not being joined.
+    
+    if sizeof($partial_read_access_fids) > 0 && empty($topic_id)
+
+[33mcommit c41c4f95dfcd145359bccef7e6204130204b28b9[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Tue Sep 22 14:05:07 2015 +0100
+
+    [main_listener] Adding some spaces at the beginning of strings to avoid problems of not having them.
+
+[33mcommit e653006de7425e42b5fbac6ee040cbd60f472f5a[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Aug 23 14:49:41 2015 +0100
+
+    Homepage set. This should shut travis up.
+
+[33mcommit 17d94112f1603801810e29bf4e40c3c27bfad208[m[33m ([m[1;33mtag: 0.5.0a[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:42:41 2015 +0100
+
+    Version BUMP. We're in ALPHA BABY!!!
+
+[33mcommit 32492500551b6ca699cf3544f071abc37940b7ac[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:41:08 2015 +0100
+
+    [main_listener] WHITESPACE CLEANUUUUUUUUP!!!!!!!!1!!!!11!!!
+
+[33mcommit d4c29e312dd121f33d968bd6c322bc2c264d59af[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:40:28 2015 +0100
+
+    [main_listener] getForumIdAndPosterFromTopic: include topic_type
+
+[33mcommit 52ef7f3e56dec3ccc5ad0f18ad82982b6de9c719[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:39:40 2015 +0100
+
+    [main_listener] Stray forgotten "}". It was forgotten in a commit. It should be important
+
+[33mcommit 316b4fe3ca9ac3284161c4de69984e556f2dea7f[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:38:02 2015 +0100
+
+    [main_listener] improved permissionEvaluate() better required data check
+    
+    Make the code that checks for the missing data better, more rubust and
+    easier to read
+
+[33mcommit d9894b4e21aba7b398ff27b30e70edf89277f25c[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:36:30 2015 +0100
+
+    [main_listener] improved permissionEvaluate() prepare for topic_type not set
+
+[33mcommit c2f38db762e2c93909e1c92fd9823a84a99d4062[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:34:41 2015 +0100
+
+    [main_listener] improved phpbb_display_forums_after
+    
+    Removed the potential handle with undefined array index which would be annoying
+
+[33mcommit 1911a344623ecc15d2a671316d49fec7e958e0e5[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:33:06 2015 +0100
+
+    [main_listener] search_postgres_author_count_query_before
+
+[33mcommit 35257a80a3e54df01a226c303219bdc4d803cec7[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:32:20 2015 +0100
+
+    [main_listener] search_native_author_count_query_before
+
+[33mcommit 5c10991b0f3b93caeeecdbd2c494be457d2ea692[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:31:53 2015 +0100
+
+    [main_listener] search_mysql_author_query_before
+
+[33mcommit 71abf829b2877c5fa4dd1e79779ddf1da8ca4e2f[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:30:09 2015 +0100
+
+    [main_listener] search_postgres_keywords_main_query_before
+
+[33mcommit e67d263181c475a6a0419d14de8128b80241d870[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:29:42 2015 +0100
+
+    [main_listener] search_native_keywords_count_query_before
+
+[33mcommit 026257249618d688f516db6ec903d26aad023996[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Aug 22 10:28:53 2015 +0100
+
+    [main_listener] search_mysql_keywords_main_query_before
+
+[33mcommit 78172ebd75bf1ea888b33682b7ac269be59ed683[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Tue Jun 16 12:42:16 2015 +0100
+
+    [permissions_strings][Fix] Missing IN_PHPBB check.
+
+[33mcommit 1261046242bb337a872bd4755a25efdacdaf3e0d[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Mar 8 10:59:46 2015 +0000
+
+    [main_listener] Whitespace code cleanup.
+
+[33mcommit 9c778befad96ca61eac8b50d2d634fb8b89d7017[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Mar 8 10:58:53 2015 +0000
+
+    [main_listener] improve permissionEvaluate() to help dealing with 0 values.
+
+[33mcommit 10fdb5aadb3566b4ee6b9875891a5981ff1788bf[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Mar 8 10:58:19 2015 +0000
+
+    [main_listener] content_visibility_get_visibility_sql_before had a faulty WHERE clause element
+
+[33mcommit f2be3555db9c32d1970324e7a371a9f7c81dd4f9[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Mar 8 10:57:03 2015 +0000
+
+    [main_listener][apply] core.viewforum_get_topic_ids_data
+
+[33mcommit ad909fe80e5db6ab6ffb3d2502fe31dc64881294[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Mar 8 10:56:30 2015 +0000
+
+    [main_listener][apply] core.viewforum_get_topic_ids_data
+
+[33mcommit bd311e97045f7191fce0f80ab3ab3341159eca22[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Mar 8 10:55:13 2015 +0000
+
+    [main_listener][apply] core.get_logs_main_query_before
+
+[33mcommit 9d3f5bafb07694400375fa9e0e41f7cc57445601[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Mar 7 23:47:36 2015 +0000
+
+    [main_listener][apply] core.mcp_front_reports_listing_query_before
+
+[33mcommit 5cfca4e09eeeee0e34645f64361e040e2c227964[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Mar 7 20:35:09 2015 +0000
+
+    [main_listener][apply] core.mcp_front_reports_count_query_before
+
+[33mcommit eb7873639c59eecbc4248958478aae8dfaf86b51[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Mar 7 20:28:00 2015 +0000
+
+    [main_listener][apply] core.mcp_front_view_queue_postid_list_after
+
+[33mcommit 66b865feca97f4db93040247f1328e3b3d6a29d0[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Mar 7 20:27:17 2015 +0000
+
+    [main_listener][apply] core.mcp_front_queue_unapproved_total_before
+
+[33mcommit ad917f881e8de32f08db749b90e6355c525e9e1b[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sat Mar 7 20:25:23 2015 +0000
+
+    [main_listener][apply] core.mcp_sorting_query_before
+
+[33mcommit 810162269dea3860df971eb7ac50c7c16ac98ef7[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Wed Mar 4 11:09:39 2015 +0000
+
+    [main_listener][apply] core.mcp_reports_get_reports_query_before
+
+[33mcommit cbbf7cc241826b9873ef4eeb03f3d407374a7eb5[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Wed Mar 4 11:05:34 2015 +0000
+
+    [main_listener][apply] core.mcp_global_f_read_auth_after
+
+[33mcommit 772d4753a4523d33eb2a493b7728771748043000[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Fri Feb 27 22:40:37 2015 +0000
+
+    [main_listener][removing] forgotten var_dump()
+
+[33mcommit e1c6e3b01b6cc8da5e0a97f03b746690300e6d2e[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Fri Feb 27 22:38:39 2015 +0000
+
+    [main_listener][removing] core.viewforum_modify_topics_data; no longer needed
+
+[33mcommit 4e0b7430d8a6d17137c8e70d11e56901e0567e6c[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Fri Feb 27 22:36:33 2015 +0000
+
+    [main_listener][apply] core.viewforum_get_topic_data
+
+[33mcommit 5980fbf4cd4c7b38960818f9d4046e86fd0a238a[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 26 13:40:27 2015 +0000
+
+    [main_listener]Moving add_lang_ext()'s call to a more logical place.
+
+[33mcommit f1e860b3518a8f9cf40f6f9688e99a5c03f3fbb6[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 26 13:38:50 2015 +0000
+
+    Fix a typo in composer.json
+
+[33mcommit c462e5ac26c4da4ac9ac91f1563e7f9cd2de07a7[m[33m ([m[1;33mtag: 0.1.1-dev[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 26 13:33:07 2015 +0000
+
+    [main_listener][bugfix] When using add_lang_ext(), the extension is "\" but here it is "/"
+
+[33mcommit 4c7743269ebae47bfc372203b04859438d493f87[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 19 11:12:28 2015 +0000
+
+    Update .travis as for the new phpBB github policy
+
+[33mcommit 98d54cfeee138e192e5d025d7fa9df079e2d4036[m[33m ([m[1;33mtag: 0.1.0-dev[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 19 10:23:06 2015 +0000
+
+    BUMP to version 0.1.0-dev
+
+[33mcommit 9c96f60cc22c29511bcfe6543791c637a6cddad0[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 19 10:22:47 2015 +0000
+
+    [main_listener][apply] search_modify_rowset to filter search results
+
+[33mcommit 764b1411ff372515295565f76bb8604c00fc25ee[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 19 10:21:44 2015 +0000
+
+    [main_listener][fix] before_f_read_check, use 'topic_data', not the direct variable
+
+[33mcommit efff3eafe70ea268b98ea6a5937dd50f188e3189[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 19 10:20:18 2015 +0000
+
+    [main_listener] MInor indentation fixing
+
+[33mcommit e85555a1ceaa28db134447f59505fcab0ee07d13[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 19 10:19:37 2015 +0000
+
+    [main_listener] Temp swap code used for phpbb_viewforum_modify_topics_data
+
+[33mcommit ce5e31c9fada122841f89a5c49112bdeeb0d4324[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 19 10:18:19 2015 +0000
+
+    [main_listener] Include topic_type for topic permissions test
+
+[33mcommit 7cd9abbb6a6505609dfb874cebd76e15ae8b6fc3[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Feb 16 22:45:35 2015 +0000
+
+    [main_listener][bugfix] $info['topic_poster'] improperly tested for isset.
+
+[33mcommit 8bc1fc60ae31300b660242812291cd9fa07e3ff0[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Feb 16 22:44:16 2015 +0000
+
+    [main_listener][apply] display_forums_modify_template_vars
+    
+    I don't really like this one due to the js but it actually solves it quite decently...
+
+[33mcommit a019116ed8a0686bd4215a46b0350a61f080081a[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Feb 16 22:43:18 2015 +0000
+
+    [main_listener][apply] content_visibility_get_forums_visibility_before
+
+[33mcommit 3a0a3a1c03e271bc37f941910841b97d8ef3c286[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Feb 16 22:42:19 2015 +0000
+
+    [main_listener][apply] viewforum_modify_topics_data (and commenting out a previous solution idea)
+
+[33mcommit 025188c552a59c68fb345c1d3700d9d48134e8c2[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Feb 16 22:39:59 2015 +0000
+
+    [main_listener] forgotten line clear
+
+[33mcommit 9e775692973c3a27d929f26c743302ca7d9dab5c[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Feb 16 22:39:25 2015 +0000
+
+    [main_listener][apply] modify_posting_auth <- This time for real
+
+[33mcommit 703f13ca1559ab3d9da8bb06f7adaa9a5f79521d[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Feb 16 22:30:41 2015 +0000
+
+    [main_listener] Fixing some indentation aligning
+
+[33mcommit f5aeda4ff0ade3252cda1b2e360178dbf96b3b9e[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Feb 15 13:49:26 2015 +0000
+
+    [main_listener] Reorder events to something that makes more sense to me
+
+[33mcommit ba1fe1f2437278e582b3a080afad163233b8d4af[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Feb 15 13:42:22 2015 +0000
+
+    [main_listener][apply][content visibility pt1] Also do some checking on topic poster
+
+[33mcommit 86b10cad8af922f467d2b5ab2694b6d7708b396e[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Feb 15 13:41:17 2015 +0000
+
+    [main_listener][apply] Block if reporting a post he can't see
+
+[33mcommit 820200beb29d1138849cabada0418f78796de7f6[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Feb 15 13:40:29 2015 +0000
+
+    [main_listener][apply] Block if posting where not allowed
+
+[33mcommit 80b9e3787e5da7cbb37f4429382fab94d7434f8d[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Feb 15 13:39:52 2015 +0000
+
+    [main_listener] Anonymous user owns no topics
+
+[33mcommit 1011b1c9acd58e68f45e89b340695ba5e61a6754[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Feb 15 13:39:00 2015 +0000
+
+    [main_listener][apply] UCP PM code
+
+[33mcommit 74ee48b0d7995c67bb729185c65f70727509077d[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Feb 15 13:38:01 2015 +0000
+
+    [main_listener] Add template to vars... It may be useful
+
+[33mcommit cee69902b718d9c605055cc5c9c89eb8d5afcf29[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Feb 15 13:37:13 2015 +0000
+
+    [main_listener] Aux functions identification comment
+
+[33mcommit bd73a1ed304c8a311704c2c9d422454291928bc6[m[33m ([m[1;33mtag: 0.0.5-dev[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 11:15:04 2015 +0000
+
+    [main_listener][+ver] First event evaluation: core.viewtopic_before_f_read_check
+
+[33mcommit 750ee0f162d20b728435619f2ac55374e16a9bad[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 11:14:31 2015 +0000
+
+    [main_listener] First event evaluation: core.viewtopic_before_f_read_check
+
+[33mcommit 2bfb81cdb21c25e50310bd94555e2f97b98c40be[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 11:13:55 2015 +0000
+
+    [main_listener] permissionEvaluate helper function
+
+[33mcommit c849fc6baf0d3865bd9be80f5eeb8d4590ed5664[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 11:13:32 2015 +0000
+
+    [main_listener] accessFailed function
+
+[33mcommit 8ae885b242537e2517cbc25e7c0c678639a9eadc[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 11:13:15 2015 +0000
+
+    [main_listener] DB helping functions
+
+[33mcommit a19750a64af767b41fa2f3517484ba78df9076c7[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 11:10:37 2015 +0000
+
+    [main_listener] Setup event listener object constructor
+
+[33mcommit 8e49889b68e41d985a96156bd7dfbdbf1634c08a[m[33m ([m[1;33mtag: 0.0.4-dev[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 11:06:56 2015 +0000
+
+    BUMP to 0.0.4-dev
+
+[33mcommit 658e969419c4cf8f1e97221ec8611d3af1eb0556[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 11:06:33 2015 +0000
+
+    Missing newlines at the end of the files
+
+[33mcommit 437cf9f59e9f7970bfd3c8508b2e2d751f3cbbf1[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 11:03:45 2015 +0000
+
+    [tests] Basic travis setup. It should be ready for when tests come.
+
+[33mcommit f5839ed025887a9de49124fce244f29ea200304b[m[33m ([m[1;33mtag: 0.0.3-dev[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 11:00:46 2015 +0000
+
+    [initial_release] BUMP version to 0.0.3-dev
+
+[33mcommit d3f1e85a7deb09a19dc61c977680d5bb49731a39[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 11:00:11 2015 +0000
+
+    [initial_release] Last checks for consistency between each function.
+
+[33mcommit de4b53601db791e696b238508cdd332a51415f89[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Feb 5 10:59:11 2015 +0000
+
+    [language] Added what should be the last missing lang keys
+
+[33mcommit cd93a7a7ca1d9dc256b4f6eac393d74e8c334483[m[33m ([m[1;33mtag: 0.0.2-dev[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Jan 26 13:56:16 2015 +0000
+
+    [initial_release][Fix] Missing table prefix var on make_place_for_new_role()
+
+[33mcommit b372306045ccb1549d2b391d2d6f10b8ddbcecb0[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Jan 26 08:47:45 2015 +0000
+
+    bump to 0.0.2-dev
+
+[33mcommit f27c45b9e47274c289ff343f2cf985935d0a5739[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Mon Jan 26 08:45:42 2015 +0000
+
+    [initial_release][Fix] Missing table prefix var on make_place_for_new_role()
+
+[33mcommit cbfe983de805397f8ec5950fdbeb5cb929cdbc69[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:26:08 2015 +0000
+
+    Create README.md
+
+[33mcommit cc1adec7504514966b1db4febda1d17e46b87db1[m[33m ([m[1;33mtag: 0.0.1-dev[m[33m)[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:15:55 2015 +0000
+
+    Event listeners
+
+[33mcommit ca62b4527b8ff59bbd89bb099f3d61f7682f6f0f[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:15:19 2015 +0000
+
+    Initial permission strings
+
+[33mcommit 127bf5723eb720d1b2e9824636353bfd4c2cf603[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:15:02 2015 +0000
+
+    Missing new line on EOF
+
+[33mcommit 54caf0bebc6efaee5968db3abac550f8456f393a[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:09:12 2015 +0000
+
+    [services] Setup possible listeners in services
+
+[33mcommit b20a9c96392c28ac74bc3e3468e214f73b774a6f[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:07:57 2015 +0000
+
+    [mig/initial_release] Use the constants where applyable.
+
+[33mcommit a4eb812470684222bd78ed1e3051b30152782682[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:07:29 2015 +0000
+
+    [mig/initial_release] Move order of roles only if there's no space available
+
+[33mcommit 72d422ace85cc7b1ebcc07d854fc941baccca2c4[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:06:36 2015 +0000
+
+    [mig/initial_release][Fix] It is supposed to remove the "readother" permission from the new role, not add
+
+[33mcommit 642063e934baf99af63211c825fcb47240049469[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:04:54 2015 +0000
+
+    [mig/initial_release] Add the missing namespace
+
+[33mcommit da73f19aa8622821bcd3d04536f3c74d72ad3d3c[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:04:19 2015 +0000
+
+    [mig/initial_release] Apply the permission for the default (which is "yes")
+
+[33mcommit b1479a084c85b7c7226782b314eef5ef0349461d[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:01:08 2015 +0000
+
+    [mig/initial_release] Constant of the permission this is based on
+
+[33mcommit 63d4cf733cba7c65c7ed97f6f0dca8f929b7ef30[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 23:00:37 2015 +0000
+
+    [mig/initial_release] Change description lang key constant to match the native ones.
+
+[33mcommit acc9aa7f3d1933ad357c5e47729eddd3b5c65d2a[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 22:58:15 2015 +0000
+
+    [mig/initial_release] Change permission name due to permission ordering reasons.
+
+[33mcommit b36051c7554da3f6da7cfc00897f61b8d796ee2d[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 22:56:06 2015 +0000
+
+    [mig/initial_release] Set the name appropriately.
+
+[33mcommit 5d7a57e2ba3b79e9b776bfb9bc590770a3daa541[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Sun Jan 25 22:54:46 2015 +0000
+
+    [composer.json] Fixing syntax errors
+
+[33mcommit 994a9651d52f78c87a1605f9d540fc1db3804647[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Thu Jan 22 11:32:51 2015 +0000
+
+    [composer.json] Fixing syntax errors
+
+[33mcommit 39fb8f9dedec24634d01b1aca5adf950aca1ebc5[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Tue Jan 20 12:42:48 2015 +0000
+
+    Setup migrations (DB changes). First try.
+
+[33mcommit 9100b7808b8f90d69c6e81098f376b5b90488f31[m
+Author: brunoais <brunoaiss@gmail.com>
+Date:   Tue Jan 20 12:41:57 2015 +0000
+
+    Setup basics: composer, ext and license.
