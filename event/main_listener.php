@@ -387,7 +387,7 @@ class main_listener implements EventSubscriberInterface
 		}
 	}
 
-
+	
 	public function phpbb_display_forums_modify_template_vars($event)
 	{
 		if (!$this->auth->acl_get('f_read_others_topics_brunoais', $event['row']['forum_id']))
@@ -399,7 +399,9 @@ class main_listener implements EventSubscriberInterface
 			$forum_row['LAST_POST_SUBJECT'] = '*' . $this->user->lang('SORRY_CLASSIFIED_INFORMATION') . '*';
 			$forum_row['LAST_POST_SUBJECT_TRUNCATED'] = '*' . $this->user->lang('SORRY_CLASSIFIED_INFORMATION') . '*';
 			$forum_row['LAST_POST_TIME'] = '-';
+			$forum_row['LAST_POST_TIME_RFC3339'] = '-';
 			$forum_row['S_IS_CLASSIFIED'] = true;
+			$forum_row['FORUM_IMG_STYLE'] = 'forum_read';
 			$forum_row['TOPICS'] = '-';
 			$forum_row['POSTS'] = '-';
 			$event['forum_row'] = $forum_row;
