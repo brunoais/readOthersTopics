@@ -27,6 +27,8 @@ class main_listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
+			'core.get_unread_topics_modify_sql' 					=> 'phpbb_get_unread_topics_modify_sql',
+			
 			'core.ucp_pm_compose_compose_pm_basic_info_query_before'	=> 'phpbb_ucp_pm_compose_compose_pm_basic_info_query_before',
 			'core.ucp_pm_compose_quotepost_query_after'					=> 'phpbb_ucp_pm_compose_quotepost_query_after',
 
@@ -89,6 +91,31 @@ class main_listener implements EventSubscriberInterface
 		$this->info_storage = array();
 	}
 
+	public function phpbb_get_unread_topics_modify_sql($event)
+	{
+		$sql_extra = $event['sql_extra'];
+		$sql_sort = $event['sql_sort'];
+		$sql_array = $event['sql_array'];
+
+		$allowed_own_forums = array_keys($this->auth->acl_getf('f_read_others_topics_brunoais', true));
+		$allowed_forums = array_keys($this->auth->acl_getf('f_read', true));
+		$definitely_allowed_forums = array_intersect($allowed_own_forums, $allowed_forums);
+		
+		$extra_query = ' AND (' . $this->db->sql_in_set('t.forum_id', $definitely_allowed_forums, false, true) . '
+			OR t.topic_poster = tt.user_id  ) ';
+
+		if(empty($sql_sort)){
+			$sql_array['WHERE'] .= $extra_query;
+		} else {
+			$sql_array['WHERE'] = str_replace($sql_sort, $extra_query . $sql_sort, $sql_array['WHERE']);
+		}
+		
+		$sql_extra .= $extra_query;
+		
+		$event['sql_array'] = $sql_array;
+		$event['sql_extra'] = $sql_extra;
+	}
+	
 	public function phpbb_ucp_pm_compose_compose_pm_basic_info_query_before($event)
 	{
 		if ($event['action'] === 'quotepost')
@@ -360,7 +387,7 @@ class main_listener implements EventSubscriberInterface
 		}
 	}
 
-
+	
 	public function phpbb_display_forums_modify_template_vars($event)
 	{
 		if (!$this->auth->acl_get('f_read_others_topics_brunoais', $event['row']['forum_id']))
@@ -372,7 +399,9 @@ class main_listener implements EventSubscriberInterface
 			$forum_row['LAST_POST_SUBJECT'] = '*' . $this->user->lang('SORRY_CLASSIFIED_INFORMATION') . '*';
 			$forum_row['LAST_POST_SUBJECT_TRUNCATED'] = '*' . $this->user->lang('SORRY_CLASSIFIED_INFORMATION') . '*';
 			$forum_row['LAST_POST_TIME'] = '-';
+			$forum_row['LAST_POST_TIME_RFC3339'] = '-';
 			$forum_row['S_IS_CLASSIFIED'] = true;
+			$forum_row['FORUM_IMG_STYLE'] = 'forum_read';
 			$forum_row['TOPICS'] = '-';
 			$forum_row['POSTS'] = '-';
 			$event['forum_row'] = $forum_row;
